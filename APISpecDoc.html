@@ -1,0 +1,806 @@
+﻿<!--<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>-->
+<!-- Required meta tags -->
+<!--<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!-- Bootstrap 5 CSS -->
+<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!-- Custom CSS -->
+<!--<link href="css/styles.css" rel="stylesheet">
+
+    <title>SocialConnect+ Documentation</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">SocialConnect+ Docs</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="data-flow.html">Data Flow</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="models.html">Models</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="patterns.html">Patterns</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uml.html">UML</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="service-architecture.html">Architecture</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+<!-- Algorithmic Flow Section -->
+<!--<main class="container py-5 mt-5">-->
+<!-- Data Flow Visualization -->
+<!--<div class="dataflow-hero mb-5">
+    <div class="main-diagram">
+        [Image Prompt: "Detailed data flow diagram with user inputs, backend services, and cloud components"]
+        <input type="text" class="form-control mt-2" placeholder="Paste main DFD URL">
+    </div>
+</div>-->
+<!-- Authentication Flow -->
+<!--<div class="flow-card auth-flow mb-5">
+    <div class="card-header bg-primary text-white">
+        <h3><i class="fas fa-fingerprint me-2"></i>4.1 User Authentication</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="process-card">
+                    <h5 class="text-success">Registration Flow</h5>
+                    <ol class="step-list">
+                        <li>User submits credentials</li>
+                        <li>PBKDF2 password hashing</li>
+                        <li>SendGrid confirmation email</li>
+                        <li>SQL Server user storage</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="sequence-diagram">
+                    [Image Prompt: "Sequence diagram showing registration process"]
+                    <input type="text" class="form-control mt-2" placeholder="Auth sequence diagram URL">
+                </div>
+            </div>
+        </div>
+        <div class="security-section mt-4 p-3 bg-light rounded">
+            <h6><i class="fas fa-shield-alt me-2"></i>Security Measures</h6>
+            <div class="row">
+                <div class="col-md-4">Rate Limiting (5 attempts/min)</div>
+                <div class="col-md-4">XSS Protection</div>
+                <div class="col-md-4">JWT Token Encryption</div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Post Creation Flow -->
+<!--<div class="flow-card post-flow mb-5">
+    <div class="card-header bg-info text-white">
+        <h3><i class="fas fa-upload me-2"></i>4.2 Content Management</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="media-flow">
+                    <h5 class="text-warning">Media Handling</h5>
+                    <ul>
+                        <li>Azure Blob Storage</li>
+                        <li>CDN Caching</li>
+                        <li>File Validation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="dataflow-diagram">
+                    [Image Prompt: "Flow diagram showing media upload process"]
+                    <input type="text" class="form-control" placeholder="Media flow URL">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Real-Time Chat Flow -->
+<!--<div class="flow-card chat-flow mb-5">
+            <div class="card-header bg-warning text-dark">
+                <h3><i class="fas fa-comments me-2"></i>4.3 Real-Time Communication</h3>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <pre class="signalr-code">
+[SignalR Hub]
+public class ChatHub : Hub {
+    public async Task SendMessage(string user, string message) {
+        await Clients.All.SendAsync("ReceiveMessage", user, message);
+    }
+}</pre>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="scalability-section">
+                            [Image Prompt: "Architecture diagram showing Redis backplane"]
+                            <input type="text" class="form-control" placeholder="Scalability diagram URL">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+<!-- Additional Sections (E-Commerce, Feed, Admin) -->
+<!-- Repeat similar card patterns for other sections -->
+<!-- 4.4 E-Commerce Module -->
+<!--<div class="flow-card ecom-flow mb-5">
+    <div class="card-header bg-success text-white">
+        <h3><i class="fas fa-shopping-cart me-2"></i>4.4 E-Commerce Operations</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="process-card">
+                    <h5 class="text-primary">Shop Creation Flow</h5>
+                    <ol class="step-list">
+                        <li>User submits shop details</li>
+                        <li>Unique URL generation</li>
+                        <li>Branding image validation</li>
+                        <li>SQL Server metadata storage</li>
+                    </ol>
+                </div>
+                <div class="mt-4">
+                    <h6 class="text-warning">Search Optimization</h6>
+                    <ul class="tech-tags">
+                        <li class="badge bg-dark">SQL FTS</li>
+                        <li class="badge bg-dark">GEOGRAPHY Data</li>
+                        <li class="badge bg-dark">Azure CDN</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="dataflow-diagram">
+                    [Image Prompt: "Flow diagram showing product listing process"]
+                    <input type="text" class="form-control" placeholder="E-commerce flow URL">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- 4.5 Unified Feed Generation -->
+<!--<div class="flow-card feed-flow mb-5">
+    <div class="card-header bg-purple text-white">
+        <h3><i class="fas fa-rss me-2"></i>4.5 Unified Feed Algorithm</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="algorithm-card">
+                    <h5 class="text-info">Ranking Formula</h5>
+                    <div class="formula-box bg-dark text-white p-3 rounded">
+                        Score = (Engagement × 0.5)<br>
+                        + (Proximity × 0.3)<br>
+                        + (Recency × 0.2)
+                    </div>
+                    <div class="mt-3">
+                        <h6>Input Weights</h6>
+                        <div class="progress-stack">
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-engagement" style="width: 50%">Engagement 50%</div>
+                            </div>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-location" style="width: 30%">Proximity 30%</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-time" style="width: 20%">Recency 20%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="dataflow-diagram">
+                    [Image Prompt: "Caching architecture diagram with Redis"]
+                    <input type="text" class="form-control" placeholder="Feed flow URL">
+                </div>
+                <div class="performance-metrics mt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="metric-box">
+                                <div class="metric-value">20</div>
+                                <div class="metric-label">Items/Page</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="metric-box">
+                                <div class="metric-value">10m</div>
+                                <div class="metric-label">Cache Refresh</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- 4.6 Admin Moderation & Analytics -->
+<!--<div class="flow-card admin-flow mb-5">
+    <div class="card-header bg-danger text-white">
+        <h3><i class="fas fa-user-shield me-2"></i>4.6 Admin Systems</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="moderation-flow">
+                    <h5 class="text-warning">Moderation Process</h5>
+                    <ul class="step-list">
+                        <li>Content flagging system</li>
+                        <li>Azure AI validation scan</li>
+                        <li>Admin review dashboard</li>
+                        <li>Action logging</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="dataflow-diagram">
+                    [Image Prompt: "Moderation workflow diagram with AI components"]
+                    <input type="text" class="form-control" placeholder="Moderation flow URL">
+                </div>
+            </div>
+        </div>
+        <div class="analytics-section mt-4 p-3 bg-light rounded">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-chart-bar me-2"></i>Key Metrics</h6>
+                    <ul>
+                        <li>DAU/MAU tracking</li>
+                        <li>Revenue aggregation</li>
+                        <li>Content moderation rate</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-bell me-2"></i>Alert System</h6>
+                    <div class="alert-grid">
+                        <span class="badge bg-critical">User bans</span>
+                        <span class="badge bg-warning">Content flags</span>
+                        <span class="badge bg-info">System alerts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- 5. Data Flow Diagram Summary -->
+<!--<div class="flow-card summary-flow mb-5">
+        <div class="card-header bg-dark text-white">
+            <h3><i class="fas fa-project-diagram me-2"></i>5. DFD Overview</h3>
+        </div>
+        <div class="card-body">
+            <div class="dfd-key">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="key-item">
+                            <span class="key-icon entity"></span>
+                            External Entities
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="key-item">
+                            <span class="key-icon process"></span>
+                            Processes
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="key-item">
+                            <span class="key-icon storage"></span>
+                            Data Stores
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-dfd">
+                [Image Prompt: "Comprehensive data flow diagram with all system components"]
+                <input type="text" class="form-control" placeholder="Main DFD URL">
+            </div>
+            <div class="critical-flows mt-4">
+                <h6>Critical Data Pathways</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="flow-path bg-user">
+                            <i class="fas fa-user"></i>
+                            User Input Pipeline
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="flow-path bg-data">
+                            <i class="fas fa-database"></i>
+                            Storage Operations
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="flow-path bg-realtime">
+                            <i class="fas fa-bolt"></i>
+                            Real-Time Systems
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>-->
+<!-- Same footer scripts as index.html -->
+<!--<div class="strategic-outlook mt-4 p-3 bg-light rounded">
+    <h6 class="text-uppercase mb-3">Roadmap Realization</h6>
+    <div class="d-flex gap-3 flex-wrap">
+        <span class="badge bg-roadmap">Q3 2024: Mobile App Launch</span>
+        <span class="badge bg-roadmap">Q1 2025: AI Recommendation Engine</span>
+        <span class="badge bg-roadmap">2026: Global Market Expansion</span>
+    </div>
+</div>
+</div>
+
+<div class="card-footer bg-dark text-white">
+    <div class="call-to-action d-flex justify-content-between align-items-center">
+        <div>
+            <i class="fas fa-rocket me-2"></i>
+            <strong>Ready for Implementation:</strong>
+            Phase 1 Development Completed (TRL 8)
+        </div>
+        <button class="btn btn-outline-light">
+            Download Executive Summary <i class="fas fa-download"></i>
+        </button>
+    </div>
+</div>
+</div>-->
+<!-- More cards for Timeline, Feasibility, etc. -->
+<!--</div>
+</div>-->
+<!-- Same footer scripts as index.html -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API Specification Document - SocialConnect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Top Navigation Bar */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+        }
+
+            .top-navbar .navbar-brand,
+            .top-navbar .nav-link {
+                color: white;
+            }
+
+                .top-navbar .nav-link:hover {
+                    color: #ffdd57;
+                }
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 56px; /* height of top navbar */
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 56px);
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1040;
+        }
+
+            .sidebar h4 {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .sidebar a {
+                color: #fff;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                transition: background 0.3s, padding-left 0.3s;
+            }
+
+                .sidebar a:hover {
+                    background: linear-gradient(45deg, #2980b9, #27ae60);
+                    padding-left: 15px;
+                }
+        /* Main Content Area */
+        .content {
+            margin-top: 56px;
+            margin-left: 270px;
+            padding: 20px;
+        }
+        /* Card Styling for 3D look */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 15px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        /* Gradient Headers for Each Section */
+        #intro-header {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        #api-header {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        #reqres-header {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        #auth-header {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+            color: #333;
+        }
+
+        #error-header {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+
+        #conclusion-header {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+        }
+        /* Preformatted text for JSON examples */
+        pre {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<!--<head>-->
+    <!-- Bootstrap 5 + Custom CSS -->
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>-->
+    <!-- Required Bootstrap CSS and JS -->
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>-->
+<body>
+
+    <!-- Top Navigation Bar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary top-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">SocialConnect+ Docs</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav" aria-controls="topNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">API Reference</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Deployment</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+
+    <!-- Left Sidebar for Internal Navigation -->
+    <div class="sidebar">
+        <h4>Sections</h4>
+        <a href="#introduction">1. Introduction</a>
+        <a href="#api-endpoints">2. API Endpoints</a>
+        <a href="#req-res">3. Request & Response Formats</a>
+        <a href="#auth-methods">4. Authentication & Authorization</a>
+        <a href="#error-handling">5. Error Handling</a>
+        <a href="#conclusion">6. Conclusion</a>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content">
+        <!-- 1. Introduction Section -->
+        <div class="card" id="introduction">
+            <div id="intro-header" class="card-header">1. Introduction</div>
+            <div class="card-body">
+                <p>This document defines the communication framework for SocialConnect+. It outlines the available API endpoints, the expected request and response formats (in JSON), the authentication methods employed, and the standardized error handling protocols to ensure secure and consistent interactions between services.</p>
+                <p>By providing clear and comprehensive API specifications, developers and integrators can build robust and reliable integrations with the platform.</p>
+            </div>
+        </div>
+
+        <!-- 2. API Endpoints Section -->
+        <div class="card" id="api-endpoints">
+            <div id="api-header" class="card-header">2. API Endpoints</div>
+            <div class="card-body">
+                <h5>Authentication APIs</h5>
+                <ul>
+                    <li>
+                        <strong>POST /api/auth/register</strong>: Registers a new user.<br>
+                        <em>Request:</em> JSON payload with username, email, and password.<br>
+                        <em>Response:</em> JSON status and user ID.
+                    </li>
+                    <li>
+                        <strong>POST /api/auth/login</strong>: Authenticates a user and returns a JWT token.<br>
+                        <em>Request:</em> JSON with email and password.<br>
+                        <em>Response:</em> JSON with a token.
+                    </li>
+                    <li>
+                        <strong>GET /api/auth/profile/{id}</strong>: Retrieves user profile details.<br>
+                        <em>Response:</em> JSON with user information.
+                    </li>
+                </ul>
+                <h5>Social Media APIs</h5>
+                <ul>
+                    <li>
+                        <strong>POST /api/posts/create</strong>: Creates a new post.<br>
+                        <em>Request:</em> JSON with user ID, content, and optional media URL.<br>
+                        <em>Response:</em> JSON with post details.
+                    </li>
+                    <li>
+                        <strong>GET /api/posts/feed</strong>: Retrieves the user feed.<br>
+                        <em>Response:</em> JSON list of posts.
+                    </li>
+                    <li>
+                        <strong>POST /api/posts/{id}/like</strong>: Likes a post.<br>
+                        <em>Response:</em> JSON confirmation.
+                    </li>
+                    <li>
+                        <strong>POST /api/posts/{id}/comment</strong>: Adds a comment.<br>
+                        <em>Request:</em> JSON with comment text.<br>
+                        <em>Response:</em> JSON with comment details.
+                    </li>
+                </ul>
+                <h5>Messaging APIs</h5>
+                <ul>
+                    <li>
+                        <strong>POST /api/messages/send</strong>: Sends a message.<br>
+                        <em>Request:</em> JSON with sender ID, receiver ID, and message content.<br>
+                        <em>Response:</em> JSON with message confirmation.
+                    </li>
+                    <li>
+                        <strong>GET /api/messages/conversation/{userId}</strong>: Retrieves conversation history.<br>
+                        <em>Response:</em> JSON list of messages.
+                    </li>
+                </ul>
+                <h5>E-commerce APIs</h5>
+                <ul>
+                    <li>
+                        <strong>POST /api/shops/create</strong>: Creates a new shop.<br>
+                        <em>Request:</em> JSON with seller details and shop information.<br>
+                        <em>Response:</em> JSON with shop details.
+                    </li>
+                    <li>
+                        <strong>POST /api/products/add</strong>: Adds a new product.<br>
+                        <em>Request:</em> JSON with product details.<br>
+                        <em>Response:</em> JSON with product information.
+                    </li>
+                    <li>
+                        <strong>POST /api/payments/process</strong>: Processes a payment.<br>
+                        <em>Request:</em> JSON with order details and payment method.<br>
+                        <em>Response:</em> JSON transaction status.
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 3. Request & Response Formats Section -->
+        <div class="card" id="req-res">
+            <div id="reqres-header" class="card-header">3. Request & Response Formats</div>
+            <div class="card-body">
+                <p>All API communications are performed using JSON format.</p>
+                <p><strong>Example Request:</strong></p>
+                <pre>{
+  \"email\": \"john@example.com\",
+  \"password\": \"password123\"
+}</pre>
+                <p><strong>Example Response:</strong></p>
+                <pre>{
+  \"status\": \"success\",
+  \"data\": {
+      \"userId\": 123,
+      \"username\": \"johndoe\"
+  }
+}</pre>
+            </div>
+        </div>
+
+        <!-- 4. Authentication & Authorization Section -->
+        <div class="card" id="auth-methods">
+            <div id="auth-header" class="card-header">4. Authentication & Authorization Methods</div>
+            <div class="card-body">
+                <p>All secure endpoints require a valid JWT token. Clients must include the token in the <code>Authorization</code> header in the format:</p>
+                <pre>Authorization: Bearer &lt;token&gt;</pre>
+                <p>In addition, OAuth 2.0 is implemented to support third-party authentication providers (e.g., Google, Facebook) for a secure and flexible login process.</p>
+            </div>
+        </div>
+
+        <!-- 5. Error Handling & Response Codes Section -->
+        <div class="card" id="error-handling">
+            <div id="error-header" class="card-header">5. Error Handling & Response Codes</div>
+            <div class="card-body">
+                <p>The API uses standard HTTP status codes:</p>
+                <ul>
+                    <li><strong>200 OK:</strong> Request succeeded.</li>
+                    <li><strong>201 Created:</strong> Resource created successfully.</li>
+                    <li><strong>400 Bad Request:</strong> Invalid input or missing parameters.</li>
+                    <li><strong>401 Unauthorized:</strong> Authentication failed or missing token.</li>
+                    <li><strong>403 Forbidden:</strong> Insufficient permissions.</li>
+                    <li><strong>404 Not Found:</strong> Resource does not exist.</li>
+                    <li><strong>500 Internal Server Error:</strong> Unexpected server error.</li>
+                </ul>
+                <p><strong>Error Response Example:</strong></p>
+                <pre>{
+  \"status\": \"error\",
+  \"error\": \"Invalid email or password\",
+  \"code\": 401
+}</pre>
+            </div>
+        </div>
+
+        <!-- 6. Conclusion Section -->
+        <div class="card" id="conclusion">
+            <div id="conclusion-header" class="card-header">6. Conclusion</div>
+            <div class="card-body">
+                <p>This API Specification Document establishes a robust framework for communication between services in SocialConnect+. By detailing all endpoints, request/response formats, authentication methods, and error handling protocols, it ensures consistency, security, and reliability across all integrations.</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

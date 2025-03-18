@@ -1,0 +1,442 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Design Document - SocialConnect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-left: 0px; /* Reduce the padding-left to fit the content better */
+        }
+
+        .main-content {
+            margin-left: 50px; /* Adjusted margin-left to fit better next to the sidebar */
+            padding: 10px;
+        }
+
+        .top-nav {
+            margin-bottom: 30px;
+            background-color: #007bff;
+        }
+
+            .top-nav .container {
+                display: flex;
+                justify-content: flex-end; /* Aligns items to the right */
+            }
+
+            .top-nav a {
+                color: white;
+                padding: 10px 20px;
+                text-decoration: none;
+            }
+
+                .top-nav a:hover {
+                    background-color: #0056b3;
+                }
+
+        .sidebar {
+            background-color: #343a40;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            color: white;
+            padding-right: 10px;
+        }
+
+            .sidebar a {
+                color: white;
+                padding: 10px 20px;
+                display: block;
+                text-decoration: none;
+            }
+
+                .sidebar a:hover {
+                    background-color: #495057;
+                    color: white;
+                }
+
+        .main-content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #343a40;
+        }
+
+        .card-header.bg-primary {
+            background-color: #007bff;
+        }
+
+        .card-header.bg-secondary {
+            background-color: #6c757d;
+        }
+
+        .card-header.bg-info {
+            background-color: #17a2b8;
+        }
+
+        .card-header.bg-dark {
+            background-color: #343a40;
+        }
+
+        .card-header.bg-warning {
+            background-color: #ffc107;
+        }
+
+        .card-header.bg-success {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar for other pages -->
+    <!--<div class="top-nav">
+        <div class="container">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">Docs</a>
+        </div>
+    </div>-->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">SocialConnect+ Architecture</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="index.html">Doc-Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="prd.html">PRD</a>
+                    <a class="nav-link" href="srs.html">SRS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                    <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="projectplan.html">Project plan</a>
+                    <a class="nav-link" href="testplan.html">Test Plan</a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="service-architecture.html">Architecture</a>
+                </li>
+            </ul>
+        </div>
+    </nav>-->
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+
+    <!-- Left Sidebar Navigation Menu -->
+    <div class="sidebar">
+        <h4 class="text-center text-white">SocialConnect+</h4>
+        <a href="#introduction">1. Introduction</a>
+        <a href="#architecture">2. System Architecture Overview</a>
+        <a href="#modules">3. Detailed Module Design</a>
+        <a href="#data">4. Data Structures & Database Design</a>
+        <a href="#algorithms">5. Algorithms & Design Patterns</a>
+        <a href="#api">6. Interface Specifications</a>
+        <a href="#components">7. Low-Level Component Design</a>
+        <a href="#security">8. Security & Performance Design</a>
+        <a href="#deployment">9. Deployment & Integration</a>
+        <a href="#conclusion">10. Conclusion & Future Enhancements</a>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="main-content container">
+        <h1 class="text-center mb-5">Detailed Design Document for SocialConnect+</h1>
+
+        <!-- 1. Introduction -->
+        <div class="card" id="introduction">
+            <div class="card-header bg-primary text-white">1. Introduction</div>
+            <div class="card-body">
+                <h5 class="section-title">1.1 Purpose</h5>
+                <p>
+                    This document provides a comprehensive and detailed design breakdown of SocialConnect+. It translates the high-level architectural vision into specific modules, algorithms, data structures, and low-level components. The document serves as a blueprint for developers, outlining design patterns, interface specifications, and integration points critical for both development and future scalability.
+                </p>
+                <h5 class="section-title">1.2 Scope</h5>
+                <p>
+                    SocialConnect+ is designed as a modular platform that integrates social networking with e-commerce functionalities and machine-learning-driven recommendations. This document details each module—from user authentication to data flow and external interfaces—ensuring that the solution is robust, secure, and scalable. The initial deployment will be on-premises, with planned migration to cloud environments.
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. System Architecture Overview -->
+        <div class="card" id="architecture">
+            <div class="card-header bg-secondary text-white">2. System Architecture Overview</div>
+            <div class="card-body">
+                <h5 class="section-title">2.1 High-Level Design Recap</h5>
+                <p>
+                    SocialConnect+ is built on a three-tier architecture comprising:
+                    <ul>
+                        <li><strong>Presentation Layer:</strong> Razor Views with Bootstrap 5 for dynamic, responsive UI.</li>
+                        <li><strong>Application Layer:</strong> .NET Core MVC 6.0 managing business logic and service orchestration.</li>
+                        <li><strong>Data Layer:</strong> SQL Server 2022 for structured data, supported by local file storage (Phase 1) and Azure Blob storage (Phase 3) for media files.</li>
+                    </ul>
+                    In addition, a microservices approach is adopted for critical modules (authentication, social interactions, e-commerce, and recommendations), ensuring independent scalability and maintainability.
+                </p>
+                <h5 class="section-title">2.2 Technology Stack</h5>
+                <p>
+                    The following technologies form the backbone of the platform:
+                    <ul>
+                        <li><strong>Frontend:</strong> Razor Views, Bootstrap 5</li>
+                        <li><strong>Backend:</strong> .NET Core MVC 6.0, C# 10</li>
+                        <li><strong>Database:</strong> SQL Server 2022</li>
+                        <li><strong>Storage:</strong> Local file storage (initially) and Azure Blob (future phase)</li>
+                        <li><strong>Payment Processing:</strong> Stripe and PayPal APIs</li>
+                        <li><strong>Machine Learning:</strong> ML.NET</li>
+                        <li><strong>Security:</strong> JWT Authentication, AES-256 Encryption</li>
+                        <li><strong>Hosting:</strong> On-premises (Phase 1) with eventual cloud migration (Azure/AWS)</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. Detailed Module Design -->
+        <div class="card" id="modules">
+            <div class="card-header bg-info text-white">3. Detailed Module Design</div>
+            <div class="card-body">
+                <h5 class="section-title">3.1 User Authentication Module</h5>
+                <p>
+                    The user authentication module leverages JWT for secure token-based authentication. It supports multi-factor authentication (MFA) and integrates with external providers such as Google and Facebook for social login.
+                </p>
+                <h5 class="section-title">3.2 Social Interaction Module</h5>
+                <p>
+                    This module handles user interactions such as posting, liking, and commenting. It is designed to scale as the number of interactions grows, employing caching strategies to ensure fast performance even under heavy load.
+                </p>
+                <h5 class="section-title">3.3 E-commerce Module</h5>
+                <p>
+                    The e-commerce module allows users to list and purchase products. It integrates with payment gateways like Stripe and PayPal for secure transactions.
+                </p>
+            </div>
+        </div>
+
+        <!-- 4. Data Structures & Database Design -->
+        <div class="card" id="data">
+            <div class="card-header bg-dark text-white">4. Data Structures & Database Design</div>
+            <div class="card-body">
+                <h5 class="section-title">4.1 Relational Database Design</h5>
+                <p>
+                    The database uses SQL Server with normalized relational tables. It includes tables for Users, Posts, Products, Orders, and Payments, with relationships between tables defined using foreign keys.
+                </p>
+                <h5 class="section-title">4.2 Data Indexing & Caching</h5>
+                <p>
+                    Indexing is employed for frequently queried fields (e.g., user email, post timestamps). Redis is used for caching popular content like trending posts to reduce database load.
+                </p>
+            </div>
+        </div>
+
+        <!-- 5. Algorithms & Design Patterns -->
+        <div class="card" id="algorithms">
+            <div class="card-header bg-warning text-white">5. Algorithms & Design Patterns</div>
+            <div class="card-body">
+                <h5 class="section-title">5.1 Machine Learning Algorithms</h5>
+                <p>
+                    Machine learning algorithms are used to personalize content. Collaborative filtering and content-based filtering are employed for product recommendations.
+                </p>
+                <h5 class="section-title">5.2 Design Patterns</h5>
+                <p>
+                    The repository pattern and Unit of Work pattern are used to manage database transactions. The strategy pattern is employed for handling different payment methods in the e-commerce module.
+                </p>
+            </div>
+        </div>
+
+        <!-- 6. Interface Specifications -->
+        <div class="card" id="api">
+            <div class="card-header bg-success text-white">6. Interface Specifications</div>
+            <div class="card-body">
+                <h5 class="section-title">6.1 REST API</h5>
+                <p>
+                    The system exposes a set of REST APIs for external integrations. These APIs handle tasks like user authentication, posting, and purchasing products. Each API follows the principles of RESTful design, using HTTP methods (GET, POST, PUT, DELETE).
+                </p>
+            </div>
+        </div>
+
+        <!-- 7. Low-Level Component Design -->
+        <div class="card" id="components">
+            <div class="card-header bg-primary text-white">7. Low-Level Component Design</div>
+            <div class="card-body">
+                <h5 class="section-title">7.1 User Profile Component</h5>
+                <p>
+                    The user profile component allows users to update their profile information, view their order history, and manage their preferences.
+                </p>
+                <h5 class="section-title">7.2 Notification Service</h5>
+                <p>
+                    The notification service sends real-time alerts to users about new interactions (likes, comments) and product updates.
+                </p>
+            </div>
+        </div>
+
+        <!-- 8. Security & Performance Design -->
+        <div class="card" id="security">
+            <div class="card-header bg-info text-white">8. Security & Performance Design</div>
+            <div class="card-body">
+                <h5 class="section-title">8.1 Security Design</h5>
+                <p>
+                    Security is paramount in SocialConnect+. The platform uses AES-256 encryption for sensitive data storage, JWT tokens for authentication, and OAuth2.0 for third-party integrations.
+                </p>
+                <h5 class="section-title">8.2 Performance Optimization</h5>
+                <p>
+                    Caching, load balancing, and efficient database queries are used to ensure high performance. The system is designed to scale horizontally by adding more servers as needed.
+                </p>
+            </div>
+        </div>
+
+        <!-- 9. Deployment & Integration -->
+        <div class="card" id="deployment">
+            <div class="card-header bg-dark text-white">9. Deployment & Integration</div>
+            <div class="card-body">
+                <h5 class="section-title">9.1 Deployment Strategy</h5>
+                <p>
+                    The platform is initially deployed on-premises. Future deployment plans include migration to cloud platforms like AWS or Azure, ensuring scalability and high availability.
+                </p>
+                <h5 class="section-title">9.2 Integration Testing</h5>
+                <p>
+                    Automated integration tests are performed to ensure that the system works seamlessly with external services like payment gateways and third-party APIs.
+                </p>
+            </div>
+        </div>
+
+        <!-- 10. Conclusion & Future Enhancements -->
+        <div class="card" id="conclusion">
+            <div class="card-header bg-success text-white">10. Conclusion & Future Enhancements</div>
+            <div class="card-body">
+                <h5 class="section-title">10.1 Conclusion</h5>
+                <p>
+                    SocialConnect+ is designed with scalability, security, and user engagement in mind. The modular architecture and use of modern technologies ensure that the platform can evolve to meet future demands.
+                </p>
+                <h5 class="section-title">10.2 Future Enhancements</h5>
+                <p>
+                    Future enhancements include the integration of AI-powered chatbots, augmented reality for product previews, and expanding the platform to include more localized content for global users.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

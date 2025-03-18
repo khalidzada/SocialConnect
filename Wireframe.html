@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframes & UI/UX Design - Social Connect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            background-color: #f8f9fa;
+        }
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            background: #343a40;
+            color: white;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+                .sidebar a:hover {
+                    background: #495057;
+                }
+        /* Content Area */
+        .content {
+            margin-left: 270px;
+            padding: 0px 90px 0px 0px; /* Added top padding to fix visibility issue */
+            width: 100%;
+        }
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        /* 3D Styled Cards */
+        .card {
+            border-radius: 10px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .spacer {
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <h4>Wireframe UI/UX</h4>
+        <a href="#introduction">Introduction</a>
+        <a href="#low-fidelity">Low-Fidelity Wireframes</a>
+        <a href="#high-fidelity">High-Fidelity Mockups</a>
+        <a href="#user-flow">User Flow Diagrams</a>
+        <a href="#branding">Branding & Style Guide</a>
+    </div>
+
+    <!-- Top Navigation Bar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Social Connect+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Doc-Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="prd.html">PRD</a>
+                        <a class="nav-link" href="srs.html">SRS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                        <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                        <a class="nav-link" href="TDD.html">Technical Detail Design Documents</a>
+                        <a class="nav-link" href="Wireframe.html">Technical Detail Design Documents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="projectplan.html">Project plan</a>
+                        <a class="nav-link" href="testplan.html">Test Plan</a>
+                    </li>
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="service-architecture.html">Architecture</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+    <!-- Content Area -->
+    <div class="content">
+
+        <!-- Introduction Section -->
+        <div id="introduction" class="section">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">Introduction</div>
+                <div class="card-body">
+                    <p>This document defines how Social Connect+ will look and behave from the user’s perspective. It includes wireframes, mockups, user flows, and branding guidelines.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low-Fidelity Wireframes Section -->
+        <div id="low-fidelity" class="section">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">Low-Fidelity Wireframes</div>
+                <div class="card-body">
+                    <p>Basic layout sketches outlining the structure and placement of UI components without detailed design.</p>
+                    <img src="low-fidelity-wireframe.png" alt="Low-Fidelity Wireframe" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <!-- High-Fidelity Mockups Section -->
+        <div id="high-fidelity" class="section">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">High-Fidelity Mockups</div>
+                <div class="card-body">
+                    <p>Detailed design representations with color, typography, and UI elements in place.</p>
+                    <img src="high-fidelity-mockup.png" alt="High-Fidelity Mockup" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <!-- User Flow Diagrams Section -->
+        <div id="user-flow" class="section">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">User Flow Diagrams</div>
+                <div class="card-body">
+                    <p>Diagrams showing how users will navigate through the application.</p>
+                    <img src="user-flow-diagram.png" alt="User Flow Diagram" class="img-fluid">
+                </div>
+            </div>
+        </div>
+
+        <!-- Branding & Style Guide Section -->
+        <div id="branding" class="section">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">Branding & Style Guide</div>
+                <div class="card-body">
+                    <p>Defines the color palette, typography, and UI consistency for the application.</p>
+                    <ul>
+                        <li><strong>Primary Color:</strong> #007bff (Blue)</li>
+                        <li><strong>Secondary Color:</strong> #28a745 (Green)</li>
+                        <li><strong>Font:</strong> Roboto, sans-serif</li>
+                        <li><strong>Button Styles:</strong> Rounded edges with hover effects</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,366 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <title>Technical Design Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            background: #F5F6FA;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2C3E50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+            .sidebar h2 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                display: block;
+                padding: 8px 0;
+                font-size: 14px;
+            }
+
+                .sidebar a:hover {
+                    background: #34495E;
+                    padding-left: 5px;
+                }
+
+        /* Main Content */
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #34495E;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+            .navbar a {
+                color: white;
+                text-decoration: none;
+                padding: 8px 15px;
+            }
+
+                .navbar a:hover {
+                    background: #2C3E50;
+                    border-radius: 4px;
+                }
+
+        /* Card Design */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-left: 6px solid #3498DB;
+        }
+
+        /* Section Headings */
+        h1 {
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h2 {
+            color: #34495E;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        /* Table Design */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        th {
+            background: #2C3E50;
+            color: white;
+        }
+
+        /* Spacer for Navbar */
+        .spacer {
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Technical Design</h2>
+        <a href="#introduction">Introduction</a>
+        <a href="#system-architecture">System Architecture</a>
+        <a href="#database-design">Database Design</a>
+        <a href="#api-specifications">API Specifications</a>
+        <a href="#technology-stack">Technology Stack</a>
+        <a href="#deployment-strategy">Deployment Strategy</a>
+        <a href="#security-considerations">Security Considerations</a>
+        <a href="#conclusion">Conclusion</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <!-- Top Navbar -->
+        <!--<div class="navbar">
+            <div>
+                <a class="nav-link active" href="index.html">Doc-Home</a>
+                <a class="nav-link" href="prd.html">PRD</a>
+                <a class="nav-link" href="srs.html">SRS</a>
+                <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                <a class="nav-link" href="TDD.html">Technical Detail Design Documents</a>
+
+                    <a class="nav-link" href="projectplan.html">Project plan</a>
+                    <a class="nav-link" href="testplan.html">Test Plan</a>
+            </div>
+        </div>-->
+
+        <div class="spacer"></div>
+
+        <div class="card" id="introduction">
+            <h1>1. Introduction</h1>
+            <p>Social Connect+ is a social media and e-commerce hybrid platform integrating user interactions, real-time messaging, and online shopping.</p>
+        </div>
+
+        <div class="card" id="system-architecture">
+            <h1>2. System Architecture</h1>
+            <h2>2.1 High-Level Overview</h2>
+            <p>The system follows a Microservices Architecture with key components such as .NET Core Web API, React.js frontend, and SQL Server.</p>
+            <h2>2.2 Component Breakdown</h2>
+            <ul>
+                <li>User Management (Authentication, Profile, Follow/Unfollow)</li>
+                <li>Social Media Module (Post creation, Likes, Comments)</li>
+                <li>Real-Time Chat & Notifications (SignalR)</li>
+                <li>E-commerce Module (Shop & Product Management, Payments)</li>
+            </ul>
+        </div>
+
+        <div class="card" id="database-design">
+            <h1>3. Database Design</h1>
+            <h2>3.1 Entity Relationship Diagram (ERD)</h2>
+            <pre>
+[User]----(1:N)----[Post]----(1:N)----[Comment]
+[User]----(1:N)----[Like]
+[User]----(1:N)----[Message]
+[User]----(1:N)----[Notification]
+[User]----(1:N)----[Shop]----(1:N)----[Product]
+            </pre>
+            <h2>3.2 Table Schemas</h2>
+
+            <h3>Users Table</h3>
+            <table>
+                <tr>
+                    <th>Column</th>
+                    <th>Type</th>
+                    <th>Constraints</th>
+                </tr>
+                <tr>
+                    <td>UserId</td>
+                    <td>INT (PK)</td>
+                    <td>Auto Increment</td>
+                </tr>
+                <tr>
+                    <td>Username</td>
+                    <td>VARCHAR(50)</td>
+                    <td>UNIQUE, NOT NULL</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card" id="api-specifications">
+            <h1>4. API Specifications</h1>
+            <h2>4.1 Authentication APIs</h2>
+            <ul>
+                <li>POST /api/auth/register</li>
+                <li>POST /api/auth/login</li>
+                <li>GET /api/auth/profile/{id}</li>
+            </ul>
+        </div>
+
+        <div class="card" id="technology-stack">
+            <h1>5. Technology Stack</h1>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                </tr>
+                <tr>
+                    <td>Frontend</td>
+                    <td>React.js / Next.js</td>
+                </tr>
+                <tr>
+                    <td>Backend</td>
+                    <td>.NET Core Web API</td>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>SQL Server</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card" id="deployment-strategy">
+            <h1>6. Deployment Strategy</h1>
+            <p>CI/CD is handled using GitHub Actions, and hosting is on Azure/AWS.</p>
+        </div>
+
+        <div class="card" id="security-considerations">
+            <h1>7. Security Considerations</h1>
+            <ul>
+                <li>JWT Authentication</li>
+                <li>SQL Injection Prevention</li>
+                <li>Data Encryption for Sensitive Information</li>
+            </ul>
+        </div>
+
+        <div class="card" id="conclusion">
+            <h1>8. Conclusion</h1>
+            <p>This document provides a structured technical foundation for Social Connect+, ensuring modularity, scalability, and security.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test Plan & Test Cases Document - SocialConnect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Top Navigation Bar */
+        .top-navbar {
+            background-color: #34495e;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+        }
+
+            .top-navbar .navbar-brand,
+            .top-navbar .nav-link {
+                color: white;
+                text-decoration: none;
+                margin-right: 15px;
+            }
+
+                .top-navbar .nav-link:hover {
+                    color: #ffdd57;
+                }
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 56px; /* Height of top navbar */
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 56px);
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1040;
+        }
+
+            .sidebar h4 {
+                text-align: center;
+                margin-bottom: 20px;
+                font-size: 18px;
+            }
+
+            .sidebar a {
+                color: #fff;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                transition: background 0.3s, padding-left 0.3s;
+            }
+
+                .sidebar a:hover {
+                    background: linear-gradient(45deg, #2980b9, #27ae60);
+                    padding-left: 15px;
+                }
+        /* Main Content */
+        .content {
+            margin-top: 56px;
+            margin-left: 270px;
+            padding: 20px;
+            width: 100%;
+        }
+        /* Card Styling with 3D Look */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            padding: 15px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        /* Gradient headers for sections */
+        #intro-header {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        #strategy-header {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        #unit-header {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        #integration-header {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+            color: #333;
+        }
+
+        #ui-header {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+
+        #performance-header {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+        }
+
+        #conclusion-header {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+        }
+        /* Preformatted text for JSON examples or code blocks */
+        pre {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <!--<nav class="navbar top-navbar fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SocialConnect+ Docs</a>
+            <div class="d-flex">
+                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="#">Documentation</a>
+                <a class="nav-link" href="#">API Reference</a>
+                <a class="nav-link" href="#">Deployment</a>
+            </div>
+        </div>
+    </nav>-->
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+
+    <!-- Left Sidebar for Internal Navigation -->
+    <div class="sidebar">
+        <h4>Test Plan Sections</h4>
+        <a href="#introduction">1. Introduction</a>
+        <a href="#test-strategy">2. Test Strategy</a>
+        <a href="#unit-tests">3. Unit Test Cases</a>
+        <a href="#integration-tests">4. Integration Test Cases</a>
+        <a href="#ui-ux-tests">5. UI/UX Testing</a>
+        <a href="#performance-tests">6. Performance & Load Testing</a>
+        <a href="#conclusion">7. Conclusion</a>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content">
+        <!-- 1. Introduction Section -->
+        <div class="card" id="introduction">
+            <div id="intro-header" class="card-header">1. Introduction</div>
+            <div class="card-body">
+                <p>
+                    This Test Plan & Test Cases Document outlines the quality assurance process for SocialConnect+. It specifies the testing strategies and detailed test cases required to verify that every feature functions correctly before deployment.
+                </p>
+                <p>
+                    The objective is to ensure a robust, reliable, and user-friendly platform by validating individual components, integration points, user interactions, and overall performance.
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. Test Strategy Section -->
+        <div class="card" id="test-strategy">
+            <div id="strategy-header" class="card-header">2. Test Strategy</div>
+            <div class="card-body">
+                <p>
+                    The testing process is divided into four main areas to ensure comprehensive quality validation:
+                </p>
+                <ul>
+                    <li><strong>Unit Testing:</strong> Testing individual components or functions in isolation.</li>
+                    <li><strong>Integration Testing:</strong> Verifying that API and database interactions work seamlessly.</li>
+                    <li><strong>UI/UX Testing:</strong> Ensuring the user interface is responsive, intuitive, and accessible.</li>
+                    <li><strong>Performance & Load Testing:</strong> Assessing system performance under normal and peak loads.</li>
+                </ul>
+                <p>
+                    <strong>Example:</strong> A unit test for the user registration function will verify that valid inputs create a new user, while integration tests ensure that the login API retrieves the correct user profile data.
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. Unit Test Cases Section -->
+        <div class="card" id="unit-tests">
+            <div id="unit-header" class="card-header">3. Unit Test Cases</div>
+            <div class="card-body">
+                <p>
+                    Unit tests focus on individual components and functions. Each test case is designed to validate the logic of a specific module.
+                </p>
+                <ul>
+                    <li><strong>User Registration Function:</strong> Verify that a new user is created when valid data is provided. <em>Expected Result:</em> A user record with a unique ID is created.</li>
+                    <li><strong>Post Creation Function:</strong> Confirm that a post is successfully created when valid text or media is submitted. <em>Expected Result:</em> The post is stored in the database with a correct timestamp.</li>
+                    <li><strong>JWT Token Generation:</strong> Ensure that a valid JWT token is returned upon successful authentication. <em>Expected Result:</em> A token string is generated and decodable to retrieve user details.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 4. Integration Test Cases Section -->
+        <div class="card" id="integration-tests">
+            <div id="integration-header" class="card-header">4. Integration Test Cases</div>
+            <div class="card-body">
+                <p>
+                    Integration tests ensure that multiple components work together seamlessly. They verify data flow between APIs, databases, and third-party services.
+                </p>
+                <ul>
+                    <li><strong>Authentication & Profile Retrieval:</strong> After login, verify that the API returns the correct user profile. <em>Expected Result:</em> User profile details are accurately retrieved.</li>
+                    <li><strong>Post & Comment Integration:</strong> When a comment is added, ensure that the post's comment count is updated and the comment appears in the thread. <em>Expected Result:</em> Consistent data is returned by both the post and comment services.</li>
+                    <li><strong>Payment Processing Integration:</strong> Validate that a successful payment updates the order status appropriately. <em>Expected Result:</em> Order status is changed to “completed” and a transaction record is created.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 5. UI/UX Testing Section -->
+        <div class="card" id="ui-ux-tests">
+            <div id="ui-header" class="card-header">5. UI/UX Testing</div>
+            <div class="card-body">
+                <p>
+                    UI/UX tests validate the interface's responsiveness, usability, and overall design. Testing is performed manually and with automation to ensure a consistent and accessible user experience.
+                </p>
+                <ul>
+                    <li><strong>Responsive Design:</strong> Verify that the UI adjusts seamlessly across mobile, tablet, and desktop devices. <em>Expected Result:</em> All elements reflow and remain accessible.</li>
+                    <li><strong>User Interaction Flow:</strong> Test key user journeys (e.g., registration, posting, and checkout) to ensure a smooth experience. <em>Expected Result:</em> Users complete flows without errors or confusion.</li>
+                    <li><strong>Accessibility:</strong> Ensure compliance with accessibility guidelines (e.g., WCAG 2.1 AA). <em>Expected Result:</em> Adequate contrast ratios and keyboard navigation support are verified.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 6. Performance & Load Testing Section -->
+        <div class="card" id="performance-tests">
+            <div id="performance-header" class="card-header">6. Performance & Load Testing</div>
+            <div class="card-body">
+                <p>
+                    Performance testing assesses the application's responsiveness and stability under normal and peak loads. Load testing simulates high volumes of traffic to identify potential bottlenecks.
+                </p>
+                <ul>
+                    <li><strong>Load Testing:</strong> Simulate 5,000 concurrent users performing operations. <em>Expected Result:</em> Average response time remains below 2.5 seconds.</li>
+                    <li><strong>Stress Testing:</strong> Gradually increase load until the system fails to determine the breaking point. <em>Expected Result:</em> System degrades gracefully with proper error logging.</li>
+                    <li><strong>Scalability Testing:</strong> Validate horizontal scaling by adding server instances. <em>Expected Result:</em> The system scales seamlessly with increased demand.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 7. Conclusion Section -->
+        <div class="card" id="conclusion">
+            <div id="conclusion-header" class="card-header">7. Conclusion</div>
+            <div class="card-body">
+                <p>
+                    This Test Plan & Test Cases Document provides a comprehensive approach to ensuring SocialConnect+ meets high-quality standards prior to deployment. Through rigorous unit, integration, UI/UX, and performance testing, we can identify and resolve issues early, leading to a robust, secure, and user-friendly application.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

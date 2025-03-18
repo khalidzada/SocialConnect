@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Preliminary Test Plan - SocialConnect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            scroll-behavior: smooth;
+            padding-top: 60px; /* Adjust this value to make space for the fixed navbar */
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            margin-bottom: 30px;
+            z-index: 1; /* Ensure navbar is beneath sidebar */
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px; /* Sidebar width */
+            height: 100%;
+            background-color: #343a40;
+            color: white;
+            z-index: 2; /* Sidebar above navbar */
+            padding-top: 20px;
+        }
+
+            .sidebar a {
+                color: white;
+                padding: 8px 16px;
+                text-decoration: none;
+                display: block;
+                font-size: 18px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #575757;
+                }
+
+        /* Adjust content container */
+        .container {
+            margin-left: 270px; /* Offset content to make space for sidebar */
+        }
+
+        .section-title {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#introduction">Introduction</a>
+        <a href="#objectives">Test Objectives</a>
+        <a href="#strategy">Test Strategy</a>
+        <a href="#types">Test Types & Approach</a>
+        <a href="#environment">Test Environment</a>
+        <a href="#roles">Roles & Responsibilities</a>
+        <a href="#schedule">Test Schedule</a>
+        <a href="#risks">Risk Management</a>
+        <a href="#deliverables">Test Deliverables</a>
+        <a href="#conclusion">Conclusion</a>
+    </div>
+
+    <!-- Navbar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Test Plan - SocialConnect+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Doc-Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="prd.html">PRD</a>
+                        <a class="nav-link" href="srs.html">SRS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                        <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="projectplan.html">Project plan</a>
+                        <a class="nav-link" href="testplan.html">Test Plan</a>
+                    </li>
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="service-architecture.html">Architecture</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+    <!-- Main Content Container -->
+    <div class="container">
+
+        <!-- Introduction -->
+        <section id="introduction">
+            <h2 class="section-title">1. Introduction</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">1.1 Purpose</h5>
+                    <p class="card-text">
+                        This document outlines the preliminary test plan for SocialConnect+. It defines the validation strategy—including unit, integration, and system tests—to ensure quality is maintained from the early stages of development.
+                    </p>
+                    <h5 class="card-title">1.2 Scope</h5>
+                    <p class="card-text">
+                        The test plan covers unit testing, integration testing, system testing, and preliminary regression testing to ensure that all aspects of the platform are validated against functional and performance requirements.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Objectives -->
+        <section id="objectives">
+            <h2 class="section-title">2. Test Objectives</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul>
+                        <li>Ensure functional accuracy across all modules (authentication, social features, e-commerce, recommendations).</li>
+                        <li>Verify data integrity and proper data processing throughout the application.</li>
+                        <li>Assess security measures, including JWT authentication and AES-256 encryption.</li>
+                        <li>Evaluate system performance and scalability under expected loads.</li>
+                        <li>Validate interface functionality for REST API endpoints and external integrations.</li>
+                        <li>Confirm consistent user experience through early usability testing.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Strategy -->
+        <section id="strategy">
+            <h2 class="section-title">3. Test Strategy</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">3.1 Testing Levels</h5>
+                    <p class="card-text">
+                        Testing will be conducted at multiple levels:
+                        <ul>
+                            <li><strong>Unit Testing:</strong> Individual components and functions are validated in isolation.</li>
+                            <li><strong>Integration Testing:</strong> Interactions between modules and external interfaces are verified.</li>
+                            <li><strong>System Testing:</strong> End-to-end testing to ensure the complete system functions as intended.</li>
+                            <li><strong>Regression Testing:</strong> Automated re-testing to ensure new changes do not affect existing functionality.</li>
+                        </ul>
+                    </p>
+                    <h5 class="card-title">3.2 Test Tools & Frameworks</h5>
+                    <p class="card-text">
+                        Key tools include:
+                        <ul>
+                            <li>Unit Testing: xUnit/NUnit</li>
+                            <li>Integration Testing: Postman and custom scripts</li>
+                            <li>System Testing: Selenium, Apache JMeter</li>
+                            <li>CI/CD Integration: GitHub Actions for automated testing</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Types and Approach -->
+        <section id="types">
+            <h2 class="section-title">4. Test Types and Approach</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">4.1 Unit Testing</h5>
+                    <p class="card-text">
+                        Developers will create test cases for each function using mocks and stubs, ensuring core logic is validated.
+                    </p>
+                    <h5 class="card-title">4.2 Integration Testing</h5>
+                    <p class="card-text">
+                        Integration tests will verify the interactions between APIs, databases, and external services (e.g., payment gateways).
+                    </p>
+                    <h5 class="card-title">4.3 System Testing</h5>
+                    <p class="card-text">
+                        Comprehensive end-to-end tests will simulate real-world usage in an environment mirroring production.
+                    </p>
+                    <h5 class="card-title">4.4 Regression Testing (Preliminary)</h5>
+                    <p class="card-text">
+                        Automated regression tests will run after each update to ensure that new changes do not impact existing functionality.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Environment -->
+        <section id="environment">
+            <h2 class="section-title">5. Test Environment</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        Testing will be conducted in environments that mirror production. Key components include on-premises servers or staging environments, SQL Server 2022 for the database, and dedicated test tools (xUnit/NUnit, Postman, Selenium, Apache JMeter) to ensure accurate simulation of user scenarios.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roles & Responsibilities -->
+        <section id="roles">
+            <h2 class="section-title">6. Roles & Responsibilities</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul>
+                        <li><strong>QA Lead:</strong> Oversees test planning and execution schedules.</li>
+                        <li><strong>Test Engineers:</strong> Develop, execute, and maintain test cases and report defects.</li>
+                        <li><strong>Developers:</strong> Write unit tests and collaborate on integration tests.</li>
+                        <li><strong>DevOps Engineer:</strong> Integrate testing into the CI/CD pipeline and maintain test environments.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Schedule -->
+        <section id="schedule">
+            <h2 class="section-title">7. Test Schedule</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Unit Testing:</strong> Conducted continuously during development.</li>
+                        <li><strong>Integration Testing:</strong> Scheduled at the end of each sprint cycle.</li>
+                        <li><strong>System Testing:</strong> Begins once all modules are integrated (estimated 2-3 weeks).</li>
+                        <li><strong>Regression Testing:</strong> Automated tests run after every build.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Management & Mitigation -->
+        <section id="risks">
+            <h2 class="section-title">8. Risk Management & Mitigation</h2>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Identified Risks</h5>
+                    <ul>
+                        <li>Inadequate test coverage.</li>
+                        <li>Delays in test environment setup.</li>
+                        <li>Failures in third-party integrations.</li>
+                        <li>Resource constraints impacting testing efforts.</li>
+                    </ul>
+                    <h5 class="card-title">Mitigation Strategies</h5>
+                    <ul>
+                        <li>Implement code coverage metrics and conduct periodic reviews.</li>
+                        <li>Establish early and containerized test environments.</li>
+                        <li>Run early integration tests with third-party services.</li>
+                        <li>Cross-train team members and utilize automated testing.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Deliverables -->
+        <section id="deliverables">
+            <h2 class="section-title">9. Test Deliverables</h2>
+            <div class="card">
+                <div class="card-body">
+                    <ul>
+                        <li>Detailed test cases and scripts for each test type.</li>
+                        <li>Regular test reports summarizing results and coverage.</li>
+                        <li>Defect logs with detailed reproduction steps and status updates.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion">
+            <h2 class="section-title">10. Conclusion</h2>
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        This preliminary test plan provides a structured approach to validating SocialConnect+. By combining unit, integration, system, and regression tests, the plan ensures that quality is built into the product from the outset. It serves as a dynamic guide to be updated as development progresses.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

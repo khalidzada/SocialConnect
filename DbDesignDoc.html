@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Database Design Document - Social Connect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        /* Top Navigation Bar */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+        }
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 56px; /* height of top navbar */
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 56px);
+            background: #343a40;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1040;
+        }
+
+            .sidebar h4 {
+                color: #fff;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .sidebar a {
+                color: #fff;
+                text-decoration: none;
+                display: block;
+                padding: 10px;
+                margin-bottom: 10px;
+                border-radius: 4px;
+                transition: background 0.3s, padding-left 0.3s;
+            }
+
+                .sidebar a:hover {
+                    background: linear-gradient(45deg, #2980b9, #27ae60);
+                    padding-left: 15px;
+                }
+        /* Main Content */
+        .content {
+            margin-top: 56px;
+            margin-left: 270px;
+            padding: 20px;
+        }
+        /* Card Styling with Gradient Headers & 3D Look */
+        .card {
+            margin-bottom: 30px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 15px;
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: white;
+        }
+        /* Individual Card Header Gradients */
+        /* You can customize these as needed */
+        #intro-header {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        #er-header {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+        }
+
+        #table-header {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        #norm-header {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+        }
+
+        #index-header {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+
+        #conclusion-header {
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+        }
+        /* Section Headings (inside cards) */
+        .card-body h5 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        /* Top Navbar Styling */
+        .navbar-custom {
+            background: #34495e;
+        }
+
+            .navbar-custom .navbar-brand,
+            .navbar-custom .nav-link {
+                color: white;
+            }
+
+                .navbar-custom .nav-link:hover {
+                    color: #ffdd57;
+                }
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<!--<head>-->
+    <!-- Bootstrap 5 + Custom CSS -->
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>-->
+    <!-- Required Bootstrap CSS and JS -->
+    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>-->
+<body>
+    <!-- Top Navigation Bar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-custom top-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">Social Connect+ Docs</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbarNav" aria-controls="topNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="topNavbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">API Reference</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Deployment</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <h4>Sections</h4>
+        <a href="#introduction">1. Introduction</a>
+        <a href="#er-diagrams">2. ER Diagrams</a>
+        <a href="#table-schemas">3. Table Schemas</a>
+        <a href="#normalization">4. Normalization & Constraints</a>
+        <a href="#indexing">5. Indexes & Query Optimization</a>
+        <a href="#conclusion">6. Conclusion</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- 1. Introduction Section -->
+        <div class="card">
+            <div id="intro-header" class="card-header">1. Introduction</div>
+            <div class="card-body">
+                <p>This document defines how data is structured, stored, and accessed within Social Connect+. It details the Entity-Relationship (ER) models, table schemas with relationships, normalization rules, constraints, and strategies for indexing and query optimization.</p>
+                <p><strong>Example:</strong> For instance, the Users table stores vital information such as usernames and emails, ensuring unique entries with proper indexing to enhance query performance.</p>
+            </div>
+        </div>
+
+        <!-- 2. ER Diagrams Section -->
+        <div class="card">
+            <div id="er-header" class="card-header">2. ER Diagrams (Entity-Relationship)</div>
+            <div class="card-body">
+                <p>The ER diagram visually represents the relationships between key entities in Social Connect+. It helps to understand how data flows across modules and how entities are interrelated.</p>
+                <pre>
+[User] -- (1:N) -- [Post] -- (1:N) -- [Comment]
+   |
+   +-- (1:N) -- [Like]
+   |
+   +-- (1:N) -- [Message]
+   |
+   +-- (1:N) -- [Notification]
+   |
+   +-- (1:N) -- [Shop] -- (1:N) -- [Product]
+        </pre>
+                <p><strong>Example:</strong> Each user can create multiple posts, and each post can have several comments, which is represented by a one-to-many relationship.</p>
+            </div>
+        </div>
+
+        <!-- 3. Table Schemas Section -->
+        <div class="card">
+            <div id="table-header" class="card-header">3. Table Schemas & Relationships</div>
+            <div class="card-body">
+                <p>This section describes the table schemas used in Social Connect+ along with their relationships. Tables are designed to ensure data integrity and efficient access.</p>
+                <h5>Users Table</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Type</th>
+                            <th>Constraints</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>UserId</td>
+                            <td>INT (PK)</td>
+                            <td>Auto Increment, Primary Key</td>
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td>VARCHAR(50)</td>
+                            <td>Unique, Not Null</td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>VARCHAR(100)</td>
+                            <td>Unique, Not Null</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Example:</strong> The Users table uses a unique constraint on the Email column to prevent duplicate registrations.</p>
+            </div>
+        </div>
+
+        <!-- 4. Normalization & Constraints Section -->
+        <div class="card">
+            <div id="normalization" class="card-header bg-warning text-dark" style="border-radius: 10px 10px 0 0;">4. Normalization & Constraints</div>
+            <div class="card-body">
+                <p>Normalization reduces data redundancy and enhances data integrity. Social Connect+ adheres to the first three normal forms (1NF, 2NF, 3NF).</p>
+                <ul>
+                    <li><strong>1NF:</strong> Each table has a primary key and atomic values.</li>
+                    <li><strong>2NF:</strong> All non-key attributes are fully dependent on the primary key.</li>
+                    <li><strong>3NF:</strong> No transitive dependencies exist among non-key attributes.</li>
+                </ul>
+                <p><strong>Example:</strong> In the Posts table, the content and timestamp are fully dependent on the PostId, ensuring no redundancy.</p>
+            </div>
+        </div>
+
+        <!-- 5. Indexes & Query Optimization Section -->
+        <div class="card">
+            <div id="indexing" class="card-header bg-secondary text-white" style="border-radius: 10px 10px 0 0;">5. Indexes & Query Optimization Strategies</div>
+            <div class="card-body">
+                <p>Indexes are used to speed up data retrieval. In Social Connect+, indexes are created on frequently queried columns (e.g., Email, CreatedAt).</p>
+                <ul>
+                    <li><strong>Indexes:</strong> Single-column and composite indexes are implemented based on query patterns.</li>
+                    <li><strong>Query Optimization:</strong> Parameterized queries and caching (using Redis) are used to enhance performance.</li>
+                </ul>
+                <p><strong>Example:</strong> An index on the Email column in the Users table drastically reduces lookup time for login operations.</p>
+            </div>
+        </div>
+
+        <!-- 6. Conclusion Section -->
+        <div class="card">
+            <div id="conclusion" class="card-header bg-dark text-white" style="border-radius: 10px 10px 0 0;">6. Conclusion</div>
+            <div class="card-body">
+                <p>This document provides a comprehensive database design for Social Connect+, ensuring that data is structured, stored, and accessed in a scalable and efficient manner. The ER diagrams, table schemas, normalization principles, and indexing strategies collectively establish a robust foundation for the backend development.</p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

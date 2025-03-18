@@ -1,0 +1,747 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SocialConnect+ Project Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* General body styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar navigation styles */
+        .sidebar {
+            height: 100vh;
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            padding-top: 20px;
+            padding-left: 10px;
+        }
+
+            .sidebar a {
+                color: white;
+                font-size: 1.1rem;
+                padding: 10px 15px;
+                display: block;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #0d6efd;
+                    color: white;
+                }
+
+        /* Main content area */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* Custom navbar styles */
+        .navbar-custom {
+            background-color: #0d6efd;
+        }
+
+            .navbar-custom .navbar-nav .nav-link {
+                color: white;
+            }
+
+                .navbar-custom .navbar-nav .nav-link:hover {
+                    color: #ffdd57;
+                }
+
+        /* Section title styles */
+        .section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+
+        /* Card styles */
+        .card {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Specific adjustments for the gap issue */
+        .container-fluid {
+            padding-top: 20px; /* Ensures no extra gap at the top */
+        }
+
+        /* Ensure no unwanted margins or padding */
+        .container {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-custom navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">SocialConnect+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Doc-Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="prd.html">PRD</a>
+                        <a class="nav-link" href="srs.html">SRS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                        <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="projectplan.html">Project plan</a>
+                        <a class="nav-link" href="testplan.html">Test Plan</a>
+                    </li>
+
+
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="service-architecture.html">Architecture</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+    <!-- Sidebar and Content Layout -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="d-flex flex-column">
+                    <h4 class="text-white text-center">Sections</h4>
+                    <a href="#core-vision">Core Vision</a>
+                    <a href="#target-audience">Target Audience</a>
+                    <a href="#usps">USPs</a>
+                    <a href="#features">Key Features</a>
+                    <a href="#technical-scope">Technical Scope</a>
+                    <a href="#business-model">Business Model</a>
+                    <a href="#roadmap">Roadmap</a>
+                    <a href="#success-metrics">Success Metrics</a>
+                    <a href="#challenges">Challenges</a>
+                    <a href="#conclusion">Conclusion</a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-md-9 col-lg-10 content">
+                <div class="container">
+                    <!-- Core Vision Section -->
+                    <section id="core-vision" class="mb-5">
+                        <h2 class="section-title">Core Vision</h2>
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    SocialConnect+ is envisioned as a groundbreaking platform that seamlessly integrates social networking and e-commerce. It enables users to socialize through post sharing, live chats, and real-time location tracking while also providing a space to monetize their presence by creating virtual shops. Moreover, the platform’s hybrid feed expertly blends social updates with shoppable content, creating a unique interactive ecosystem.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Target Audience Section -->
+                    <section id="target-audience" class="mb-5">
+                        <h2 class="section-title">Target Audience</h2>
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    SocialConnect+ is designed for a diverse audience. It caters to social users aged 18–35 seeking engaging communities, entrepreneurs and small business owners eager to promote niche products through personalized virtual shops, and advertisers who desire targeted exposure via sponsored content and innovative ad placements.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Unique Selling Points (USPs) Section -->
+                    <section id="usps" class="mb-5">
+                        <h2 class="section-title">Unique Selling Points (USPs)</h2>
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    SocialConnect+ differentiates itself with a smart hybrid feed that combines social posts and product listings, offering real-time features such as live chat and location tracking, and providing an accessible monetization model with free virtual shop creation and a minimal 5% commission on sales. These attributes set it apart in the competitive digital marketplace.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Key Features & Functions Section -->
+                    <section id="features" class="mb-5">
+                        <h2 class="section-title">Key Features & Functions</h2>
+
+                        <!-- Social Networking Features -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Social Networking Features</h4>
+                                <p class="card-text">
+                                    The platform offers extensive social networking capabilities including user profile creation and customization, multimedia post sharing, and interactive reactions like likes, comments, and shares. Enhanced communication is achieved through private and group chats with end-to-end encryption, supplemented by features such as friend requests, follower systems, location tracking (with consent), and real-time push notifications.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- E-Commerce Features -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">E-Commerce Features</h4>
+                                <p class="card-text">
+                                    Users can set up their virtual shops with customizable branding, list products complete with images, descriptions, and pricing, and manage secure transactions via a robust payment gateway. The seamless shopping experience is further enhanced by integrated shopping cart functionalities, a streamlined checkout process, and order tracking paired with a comprehensive review and rating system.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Discovery & Engagement -->
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h4 class="card-title">Discovery & Engagement</h4>
+                                <p class="card-text">
+                                    At its core, the platform provides a personalized hybrid feed that intelligently curates both social and shopping content based on user interests. AI-driven recommendations, sponsored posts, advanced search and filter options, and trend analysis work in tandem to maximize engagement and offer valuable insights to sellers.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Technical Scope Section -->
+                    <section id="technical-scope" class="mb-5">
+                        <h2 class="section-title">Technical Scope</h2>
+
+                        <!-- Architecture & Tech Stack -->
+                        <div class="card bg-info text-white mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Architecture & Tech Stack</h4>
+                                <p class="card-text">
+                                    The solution is built on a modern tech stack: the frontend utilizes Razor Views, JavaScript, HTML5, and Bootstrap 5 to ensure a responsive and attractive design; the backend is developed using .NET Core MVC with C#, backed by SQL Server for efficient data management. Cloud hosting on Azure or AWS guarantees scalability, while OAuth2 and JWT fortify user authentication. AI and analytics further enhance personalization and predictive insights.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Security & Compliance -->
+                        <div class="card bg-dark text-white">
+                            <div class="card-body">
+                                <h4 class="card-title">Security & Compliance</h4>
+                                <p class="card-text">
+                                    Security remains paramount at SocialConnect+. End-to-end encryption protects messaging, while adherence to GDPR and data privacy regulations ensures user trust. Secure payment processing is maintained through PCI DSS compliance, and role-based access control, along with regular security audits, fortify the platform against potential vulnerabilities.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Business Model & Monetization Section -->
+                    <section id="business-model" class="mb-5">
+                        <h2 class="section-title">Business Model & Monetization</h2>
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    SocialConnect+ employs a freemium model, offering free access to basic features while premium options cater to business needs. Revenue streams include a 5% commission on product sales, advertising revenue from sponsored content, and subscription plans that unlock advanced analytics and marketing tools. This balanced model ensures accessibility for small-scale sellers while driving sustainable growth.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Development Roadmap Section -->
+                    <section id="roadmap" class="mb-5">
+                        <h2 class="section-title">Development Roadmap</h2>
+
+                        <!-- Phase 1 -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Phase 1: MVP Development (3-6 Months)</h4>
+                                <p class="card-text">
+                                    The initial phase focuses on establishing the core functionalities including user authentication, profile management, and essential social and e-commerce features. This sets the groundwork for further development and user testing.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Phase 2 -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title">Phase 2: Beta Testing & Optimization (6-9 Months)</h4>
+                                <p class="card-text">
+                                    In this phase, the platform will undergo rigorous beta testing, integrating AI-driven feed personalization and advanced seller analytics. Enhanced security and performance measures will be implemented to ensure a seamless user experience.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Phase 3 -->
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h4 class="card-title">Phase 3: Full Launch & Scaling (9-12 Months)</h4>
+                                <p class="card-text">
+                                    The final phase focuses on a comprehensive launch accompanied by aggressive marketing and onboarding campaigns. Monetization features such as ads and subscription plans will be fully deployed, with plans to expand into additional regions.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Success Metrics Section -->
+                    <section id="success-metrics" class="mb-5">
+                        <h2 class="section-title">Success Metrics</h2>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    The platform’s success will be gauged by various metrics including user engagement (active users, interactions, chat activity), sales volume (number of products sold and total transaction value), seller adoption (number of virtual shops created), and advertiser participation (revenue from sponsored content). These indicators will guide ongoing enhancements and strategic decisions.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Challenges & Mitigation Section -->
+                    <section id="challenges" class="mb-5">
+                        <h2 class="section-title">Potential Challenges & Mitigation</h2>
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Despite its innovative approach, SocialConnect+ must navigate challenges such as user acquisition, stiff competition, security risks, and scalability. Mitigation strategies will include targeted marketing campaigns, robust security protocols, regular platform optimization, and expansion of backend infrastructure.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Conclusion Section -->
+                    <section id="conclusion" class="mb-5">
+                        <h2 class="section-title">Conclusion</h2>
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <p class="card-text">
+                                    SocialConnect+ represents the next frontier of social commerce, blending user connectivity with e-commerce capabilities in a way that hasn’t been seen before. With a comprehensive technical architecture, strong business model, and engaging features, it is poised for long-term success.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+    <title>Technical Architecture</title>
+</head>
+<body class="detailed-page">
+    <nav class="navbar navbar-dark bg-primary mb-5">
+        <div class="container">
+            <a href="index.html" class="navbar-brand"><i class="bi bi-arrow-left"></i> Back to Overview</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="architecture-header bg-primary text-white p-4 rounded-3 mb-4">
+            <h1 class="display-4">Technical Architecture</h1>
+            <p class="lead">Scalable foundation for hybrid platform operations</p>
+        </div>-->
+<!-- System Diagram Section -->
+<!--<div class="diagram-section mb-5">
+    <div class="section-header bg-info text-white p-3 rounded-top">
+        <h2><i class="bi bi-diagram-3"></i> System Architecture</h2>
+    </div>
+    <div class="content-box p-4 rounded-bottom">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Core Components</h3>
+                <ul class="list-group">
+                    <li class="list-group-item">ASP.NET Core MVC Backend</li>
+                    <li class="list-group-item">SQL Server Database</li>
+                    <li class="list-group-item">Azure Cloud Services</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="image-prompt-card bg-light p-3 rounded">
+                    <h4>Architecture Diagram</h4>
+                    <p class="text-muted">Suggested visual:</p>
+                    <div class="alert alert-info">
+                        <strong>Prompt:</strong> "Layered architecture diagram showing cloud-hosted ASP.NET Core backend communicating with SQL Server database and React frontend, with Azure service integration"
+                    </div>
+                    <input type="url" class="form-control" placeholder="Paste diagram URL here">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!-- Data Flow Section -->
+<!--<div class="dataflow-section mb-5">
+            <div class="section-header bg-warning text-dark p-3 rounded-top">
+                <h2><i class="bi bi-shuffle"></i> Data Flow</h2>
+            </div>
+            <div class="content-box p-4 rounded-bottom">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h3>Request Handling Process</h3>
+                        <ol class="process-steps">
+                            <li>User initiates action via UI</li>
+                            <li>Request routed through API Gateway</li>
+                            <li>Business logic processing</li>
+                            <li>Database interaction</li>
+                            <li>Response generation</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="image-prompt-card bg-light p-3 rounded">
+                            <h4>Sequence Diagram</h4>
+                            <div class="alert alert-warning">
+                                <strong>Prompt:</strong> "Sequence diagram showing user-to-database communication flow with timing constraints"
+                            </div>
+                            <input type="url" class="form-control" placeholder="Paste diagram URL here">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>-->
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SocialConnect+ Project Overview</title>-->
+<!-- Bootstrap 5 CSS -->
+<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for professional presentation */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+
+        .card {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>-->
+<!-- Navigation Bar -->
+<!--<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#">SocialConnect+</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#core-vision">Core Vision</a></li>
+                <li class="nav-item"><a class="nav-link" href="#target-audience">Target Audience</a></li>
+                <li class="nav-item"><a class="nav-link" href="#usps">USPs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Key Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#technical-scope">Technical Scope</a></li>
+                <li class="nav-item"><a class="nav-link" href="#business-model">Business Model</a></li>
+                <li class="nav-item"><a class="nav-link" href="#roadmap">Roadmap</a></li>
+                <li class="nav-item"><a class="nav-link" href="#success-metrics">Success Metrics</a></li>
+                <li class="nav-item"><a class="nav-link" href="#challenges">Challenges</a></li>
+                <li class="nav-item"><a class="nav-link" href="#conclusion">Conclusion</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>-->
+<!-- Main Content -->
+<!--<div class="container">-->
+<!-- Core Vision Section -->
+<!--<section id="core-vision" class="mb-5">
+    <h2 class="section-title">Core Vision</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                SocialConnect+ is envisioned as a groundbreaking platform that seamlessly integrates social networking and e-commerce. It enables users to socialize through post sharing, live chats, and real-time location tracking while also providing a space to monetize their presence by creating virtual shops. Moreover, the platform’s hybrid feed expertly blends social updates with shoppable content, creating a unique interactive ecosystem.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Target Audience Section -->
+<!--<section id="target-audience" class="mb-5">
+    <h2 class="section-title">Target Audience</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                SocialConnect+ is designed for a diverse audience. It caters to social users aged 18–35 seeking engaging communities, entrepreneurs and small business owners eager to promote niche products through personalized virtual shops, and advertisers who desire targeted exposure via sponsored content and innovative ad placements.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Unique Selling Points (USPs) Section -->
+<!--<section id="usps" class="mb-5">
+    <h2 class="section-title">Unique Selling Points (USPs)</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                SocialConnect+ differentiates itself with a smart hybrid feed that combines social posts and product listings, offering real-time features such as live chat and location tracking, and providing an accessible monetization model with free virtual shop creation and a minimal 5% commission on sales. These attributes set it apart in the competitive digital marketplace.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Key Features & Functions Section -->
+<!--<section id="features" class="mb-5">
+    <h2 class="section-title">Key Features & Functions</h2>-->
+<!-- Social Networking Features -->
+<!--<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">Social Networking Features</h4>
+        <p class="card-text">
+            The platform offers extensive social networking capabilities including user profile creation and customization, multimedia post sharing, and interactive reactions like likes, comments, and shares. Enhanced communication is achieved through private and group chats with end-to-end encryption, supplemented by features such as friend requests, follower systems, location tracking (with consent), and real-time push notifications.
+        </p>
+    </div>
+</div>-->
+<!-- E-Commerce Features -->
+<!--<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">E-Commerce Features</h4>
+        <p class="card-text">
+            Users can set up their virtual shops with customizable branding, list products complete with images, descriptions, and pricing, and manage secure transactions via a robust payment gateway. The seamless shopping experience is further enhanced by integrated shopping cart functionalities, a streamlined checkout process, and order tracking paired with a comprehensive review and rating system.
+        </p>
+    </div>
+</div>-->
+<!-- Discovery & Engagement -->
+<!--<div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Discovery & Engagement</h4>
+            <p class="card-text">
+                At its core, the platform provides a personalized hybrid feed that intelligently curates both social and shopping content based on user interests. AI-driven recommendations, sponsored posts, advanced search and filter options, and trend analysis work in tandem to maximize engagement and offer valuable insights to sellers.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Technical Scope Section -->
+<!--<section id="technical-scope" class="mb-5">
+    <h2 class="section-title">Technical Scope</h2>-->
+<!-- Architecture & Tech Stack -->
+<!--<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">Architecture & Tech Stack</h4>
+        <p class="card-text">
+            The solution is built on a modern tech stack: the frontend utilizes Razor Views, JavaScript, HTML5, and Bootstrap 5 to ensure a responsive and attractive design; the backend is developed using .NET Core MVC with C#, backed by SQL Server for efficient data management. Cloud hosting on Azure or AWS guarantees scalability, while OAuth2 and JWT fortify user authentication. AI and analytics further enhance personalization and predictive insights.
+        </p>
+    </div>
+</div>-->
+<!-- Security & Compliance -->
+<!--<div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Security & Compliance</h4>
+            <p class="card-text">
+                Security remains paramount at SocialConnect+. End-to-end encryption protects messaging, while adherence to GDPR and data privacy regulations ensures user trust. Secure payment processing is maintained through PCI DSS compliance, and role-based access control, along with regular security audits, fortify the platform against potential vulnerabilities.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Business Model & Monetization Section -->
+<!--<section id="business-model" class="mb-5">
+    <h2 class="section-title">Business Model & Monetization</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                SocialConnect+ employs a freemium model, offering free access to basic features while premium options cater to business needs. Revenue streams include a 5% commission on product sales, advertising revenue from sponsored content, and subscription plans that unlock advanced analytics and marketing tools. This balanced model ensures accessibility for small-scale sellers while driving sustainable growth.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Development Roadmap Section -->
+<!--<section id="roadmap" class="mb-5">
+    <h2 class="section-title">Development Roadmap</h2>-->
+<!-- Phase 1 -->
+<!--<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">Phase 1: MVP Development (3-6 Months)</h4>
+        <p class="card-text">
+            The initial phase focuses on establishing the core functionalities including user authentication, profile management, and essential social and e-commerce features. This sets the groundwork for further development and user testing.
+        </p>
+    </div>
+</div>-->
+<!-- Phase 2 -->
+<!--<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">Phase 2: Beta Testing & Optimization (6-9 Months)</h4>
+        <p class="card-text">
+            In this phase, the platform will undergo rigorous beta testing, integrating AI-driven feed personalization and advanced seller analytics. Enhanced security and performance measures will be implemented to ensure a seamless user experience.
+        </p>
+    </div>
+</div>-->
+<!-- Phase 3 -->
+<!--<div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="card-title">Phase 3: Full Launch & Scaling (9-12 Months)</h4>
+            <p class="card-text">
+                The final phase focuses on a comprehensive launch accompanied by aggressive marketing and onboarding campaigns. Monetization features such as ads and subscription plans will be fully deployed, with plans to expand into additional regions.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Success Metrics Section -->
+<!--<section id="success-metrics" class="mb-5">
+    <h2 class="section-title">Success Metrics</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                The platform’s success will be gauged by various metrics including user engagement (active users, interactions, chat activity), sales volume (number of products sold and total transaction value), seller adoption (number of virtual shops created), and advertiser participation (revenue from sponsored content). These indicators will guide ongoing enhancements and strategic decisions.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Challenges & Mitigation Section -->
+<!--<section id="challenges" class="mb-5">
+    <h2 class="section-title">Potential Challenges & Mitigation</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p class="card-text">
+                Despite its innovative approach, SocialConnect+ must navigate challenges such as user acquisition, stiff competition, security risks, and maintaining a fair monetization balance. The strategy to overcome these includes targeted marketing, continuous innovation, rigorous security audits, and a balanced revenue model that supports both users and sellers.
+            </p>
+        </div>
+    </div>
+</section>-->
+<!-- Conclusion Section -->
+<!--<section id="conclusion" class="mb-5">
+        <h2 class="section-title">Conclusion</h2>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <p class="card-text">
+                    SocialConnect+ is poised to disrupt the market by combining the dynamic worlds of social media and e-commerce. With its innovative use of AI, real-time features, and a user-friendly monetization strategy, the platform offers a compelling ecosystem for social users, entrepreneurs, and advertisers alike.
+                </p>
+            </div>
+        </div>
+    </section>
+
+</div>-->
+<!-- Footer -->
+<!--<footer class="bg-primary text-white text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">&copy; 2025 SocialConnect+. All rights reserved.</p>
+    </div>
+</footer>-->
+<!-- Bootstrap 5 Bundle with Popper -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>-->

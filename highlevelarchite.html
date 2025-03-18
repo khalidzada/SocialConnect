@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Level Architecture Document - SocialConnect+</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <title>SocialConnect+ Project Overview</title>
+    <!-- Required Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100%;
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+
+            .sidebar a {
+                font-size: 1.1rem;
+                padding: 10px;
+                display: block;
+                color: #333;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-bottom: 5px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #007bff;
+                    color: white;
+                }
+
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+            .navbar-nav .nav-item {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+        .navbar {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">SocialConnect+ Architecture</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="index.html">Doc-Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="prd.html">PRD</a>
+                    <a class="nav-link" href="srs.html">SRS</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="highlevelarchite.html">High Level Architecture Documet</a>
+                    <a class="nav-link" href="DetailDesignDoc.html">Detail Design Documents</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="projectplan.html">Project plan</a>
+                    <a class="nav-link" href="testplan.html">Test Plan</a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="service-architecture.html">Architecture</a>
+                </li>
+            </ul>
+        </div>
+    </nav>-->
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-file-earmark-text"></i> SocialConnect+ Docs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house-door"></i> Home
+                        </a>
+                    </li>
+
+                    <!-- Requirements Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-check"></i> Requirements
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="prd.html"><i class="bi bi-file-text"></i> PRD</a></li>
+                            <li><a class="dropdown-item text-end" href="srs.html"><i class="bi bi-file-ruled"></i> SRS</a></li>
+                            <li><a class="dropdown-item text-end" href="APISpecDoc.html"><i class="bi bi-plug"></i> API Spec</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Design Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Design
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="highlevelarchite.html"><i class="bi bi-layers"></i> High Level Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="DetailDesignDoc.html"><i class="bi bi-pencil-square"></i> Detail Design</a></li>
+                            <li><a class="dropdown-item text-end" href="TDD.html"><i class="bi bi-gear"></i> Technical Design</a></li>
+                            <li><a class="dropdown-item text-end" href="Wireframe.html"><i class="bi bi-layout-wtf"></i> Wireframes</a></li>
+                            <li><a class="dropdown-item text-end" href="DbDesignDoc.html"><i class="bi bi-database"></i> DB Design</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Planning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-kanban"></i> Planning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="projectplan.html"><i class="bi bi-calendar-week"></i> Project Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="DevopStr.html"><i class="bi bi-cloud-upload"></i> DevOps Strategy</a></li>
+                            <li><a class="dropdown-item text-end" href="testplan.html"><i class="bi bi-check2-square"></i> Test Plan</a></li>
+                            <li><a class="dropdown-item text-end" href="testcase.html"><i class="bi bi-list-check"></i> Test Cases</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Architecture Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-building"></i> Architecture
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item text-end" href="service-architecture.html"><i class="bi bi-diagram-2"></i> Service Architecture</a></li>
+                            <li><a class="dropdown-item text-end" href="deployment-architecture.html"><i class="bi bi-server"></i> Deployment Architecture</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        /* Custom right alignment for mobile */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                text-align: right !important;
+            }
+
+            .dropdown-menu {
+                --bs-position: end;
+                text-align: right !important;
+                margin-right: 15px !important;
+            }
+
+            .dropdown-item {
+                padding-right: 1.5rem !important;
+            }
+
+            .navbar-nav {
+                align-items: flex-end !important;
+            }
+        }
+    </style>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar bg-primary">
+                <h4 class="text-center">Contents</h4>
+                <div class="list-group">
+                    <a href="#intro" class="list-group-item list-group-item-action">1. Introduction</a>
+                    <a href="#overview" class="list-group-item list-group-item-action">2. Architectural Overview</a>
+                    <a href="#components" class="list-group-item list-group-item-action">3. System Components</a>
+                    <a href="#data-flow" class="list-group-item list-group-item-action">4. Data Flow Diagram</a>
+                    <a href="#interfaces" class="list-group-item list-group-item-action">5. External Interfaces</a>
+                    <a href="#security" class="list-group-item list-group-item-action">6. Security & Performance Considerations</a>
+                    <a href="#deployment" class="list-group-item list-group-item-action">7. Deployment Strategy</a>
+                    <a href="#conclusion" class="list-group-item list-group-item-action">8. Conclusion</a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <h1 class="text-center mb-4">High-Level Architecture Document for SocialConnect+</h1>
+
+                <!-- 1. Introduction -->
+                <div class="card" id="intro">
+                    <div class="card-header bg-primary text-white">1. Introduction</div>
+                    <div class="card-body">
+                        <h5 class="card-title">1.1 Purpose</h5>
+                        <p class="card-text">
+                            This document establishes a comprehensive framework for the design and implementation of SocialConnect+. It delineates the system’s architecture, detailing the major components, data flows, and technology stack.
+                        </p>
+                        <h5 class="card-title">1.2 Scope</h5>
+                        <p class="card-text">
+                            SocialConnect+ is engineered as a modular and scalable solution that amalgamates social interaction capabilities with robust e-commerce features.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2. Architectural Overview -->
+                <div class="card" id="overview">
+                    <div class="card-header bg-secondary text-white">2. Architectural Overview</div>
+                    <div class="card-body">
+                        <h5 class="card-title">2.1 High-Level Design</h5>
+                        <p class="card-text">
+                            The architecture is based on a three-tier model that segregates the application into distinct layers for clarity and maintainability:
+                            <ul>
+                                <li><strong>Presentation Layer (Frontend):</strong> Utilizes Razor Views combined with Bootstrap 5 to provide a responsive and intuitive user interface.</li>
+                                <li><strong>Application Layer (Backend):</strong> Developed using .NET Core MVC 6.0, this layer manages business logic, orchestrates service calls, and ensures efficient session management.</li>
+                                <li><strong>Data Layer (Database & Storage):</strong> Leverages SQL Server 2022 for structured data storage, complemented by local file storage initially, with plans to migrate to Azure Blob storage for media content.</li>
+                            </ul>
+                        </p>
+                        <h5 class="card-title">2.2 Technology Stack</h5>
+                        <p class="card-text">
+                            The platform incorporates cutting-edge technologies to ensure a robust, secure, and efficient operational environment:
+                            <ul>
+                                <li><strong>Frontend:</strong> Razor Views and Bootstrap 5 enable dynamic and responsive UI development.</li>
+                                <li><strong>Backend:</strong> .NET Core MVC 6.0 and C# 10 form the backbone of the server-side logic and service orchestration.</li>
+                                <li><strong>Database:</strong> SQL Server 2022 is used for data management, providing a reliable and scalable solution.</li>
+                                <li><strong>Storage:</strong> The initial phase uses local file storage, with a planned upgrade to Azure Blob for enhanced scalability.</li>
+                                <li><strong>Payment Gateway:</strong> Integration with Stripe and PayPal APIs ensures secure and PCI DSS-compliant payment processing.</li>
+                                <li><strong>Machine Learning:</strong> ML.NET drives the recommendation engine to personalize content and product listings.</li>
+                                <li><strong>Security:</strong> JWT authentication and AES-256 encryption guarantee data integrity and confidentiality.</li>
+                                <li><strong>Hosting:</strong> The solution starts on-premises and is designed for future cloud integration using platforms like Azure or AWS.</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 3. System Components -->
+                <div class="card" id="components">
+                    <div class="card-header bg-info text-white">3. System Components</div>
+                    <div class="card-body">
+                        <h5 class="card-title">3.1 Authentication & Authorization</h5>
+                        <p class="card-text">
+                            The system employs robust security measures by integrating JWT for secure session management and OAuth2 for third-party authentication (including Google and Facebook).
+                        </p>
+                        <h5 class="card-title">3.2 Social Features</h5>
+                        <p class="card-text">
+                            SocialConnect+ offers a suite of social interaction tools that empower users to create detailed profiles, post multimedia content, and engage through likes, comments, and reactions.
+                        </p>
+                        <h5 class="card-title">3.3 E-Commerce Features</h5>
+                        <p class="card-text">
+                            The e-commerce module enables sellers to establish virtual shops, manage product listings, and execute secure transactions.
+                        </p>
+                        <h5 class="card-title">3.4 Discovery & Recommendations</h5>
+                        <p class="card-text">
+                            A sophisticated hybrid feed algorithm, powered by ML.NET, curates content tailored to individual user preferences.
+                        </p>
+                        <h5 class="card-title">3.5 Administration & Compliance</h5>
+                        <p class="card-text">
+                            Administrative tools provide comprehensive monitoring and logging of system activities. Automated processes ensure GDPR compliance through data anonymization.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4. Data Flow Diagram -->
+                <div class="card" id="data-flow">
+                    <div class="card-header bg-dark text-white">4. Data Flow Diagram</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Data Processing Workflow</h5>
+                        <p class="card-text">
+                            The data flow diagram visually represents the lifecycle of a user request, from the initial frontend interaction to the backend processing and data retrieval.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. External Interfaces -->
+                <div class="card" id="interfaces">
+                    <div class="card-header bg-warning text-dark">5. External Interfaces</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Interface Specifications</h5>
+                        <p class="card-text">
+                            SocialConnect+ integrates with several external systems to extend its functionality:
+                            <ul>
+                                <li><strong>RESTful API:</strong> Enables JSON-based communication between the frontend and backend services.</li>
+                                <li><strong>Payment Gateway API:</strong> Facilitates secure transactions via Stripe and PayPal.</li>
+                                <li><strong>Cloud Storage API:</strong> Connects to Azure Blob Storage for scalable media management.</li>
+                                <li><strong>ML.NET API:</strong> Provides endpoints for advanced machine learning operations, enhancing the recommendation engine.</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 6. Security & Performance Considerations -->
+                <div class="card" id="security">
+                    <div class="card-header bg-danger text-white">6. Security & Performance Considerations</div>
+                    <div class="card-body">
+                        <h5 class="card-title">6.1 Security Measures</h5>
+                        <p class="card-text">
+                            The platform employs industry-leading security protocols to ensure data protection and system integrity. Data at rest is encrypted using AES-256, while secure TLS protocols protect data in transit.
+                        </p>
+                        <h5 class="card-title">6.2 Performance Optimization</h5>
+                        <p class="card-text">
+                            To ensure rapid response times and high availability, the system incorporates several performance enhancements like caching and load balancing.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 7. Deployment Strategy -->
+                <div class="card" id="deployment">
+                    <div class="card-header bg-success text-white">7. Deployment Strategy</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Phased Deployment</h5>
+                        <p class="card-text">
+                            The deployment strategy for SocialConnect+ is structured in multiple phases to minimize risk and ensure continuity:
+                            <ul>
+                                <li><strong>Phase 1:</strong> On-premises deployment using dedicated servers.</li>
+                                <li><strong>Phase 2:</strong> Transition to a hybrid cloud model through containerization.</li>
+                                <li><strong>Phase 3:</strong> Full migration to a cloud environment using Azure or AWS.</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 8. Conclusion -->
+                <div class="card" id="conclusion">
+                    <div class="card-header bg-secondary text-white">8. Conclusion</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Final Thoughts</h5>
+                        <p class="card-text">
+                            This document provides a detailed and professionally structured blueprint for the architecture of SocialConnect+.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High-Level Architecture Document - SocialConnect+</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 900px;
+      margin-top: 30px;
+    }
+    .card {
+      margin-bottom: 20px;
+    }
+    .card-header {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">High-Level Architecture Document for SocialConnect+</h1>-->
+<!-- 1. Introduction -->
+<!--<div class="card">
+  <div class="card-header bg-primary text-white">1. Introduction</div>
+  <div class="card-body">
+    <h5 class="card-title">1.1 Purpose</h5>
+    <p class="card-text">
+      This document establishes a comprehensive framework for the design and implementation of SocialConnect+. It delineates the system’s architecture, detailing the major components, data flows, and technology stack. Serving as a definitive guide for both stakeholders and the development team, it ensures that the platform's social networking and e-commerce functionalities are integrated seamlessly while meeting all business and compliance requirements.
+    </p>
+    <h5 class="card-title">1.2 Scope</h5>
+    <p class="card-text">
+      SocialConnect+ is engineered as a modular and scalable solution that amalgamates social interaction capabilities with robust e-commerce features. Initially deployed on-premises, the platform is designed with a forward-looking approach that accommodates a gradual transition to cloud hosting. It encompasses user authentication, multimedia social features, secure online transactions, and machine-learning-driven recommendations.
+    </p>
+  </div>
+</div>-->
+<!-- 2. Architectural Overview -->
+<!--<div class="card">
+  <div class="card-header bg-secondary text-white">2. Architectural Overview</div>
+  <div class="card-body">
+    <h5 class="card-title">2.1 High-Level Design</h5>
+    <p class="card-text">
+      The architecture is based on a three-tier model that segregates the application into distinct layers for clarity and maintainability:
+      <ul>
+        <li><strong>Presentation Layer (Frontend):</strong> Utilizes Razor Views combined with Bootstrap 5 to provide a responsive and intuitive user interface.</li>
+        <li><strong>Application Layer (Backend):</strong> Developed using .NET Core MVC 6.0, this layer manages business logic, orchestrates service calls, and ensures efficient session management.</li>
+        <li><strong>Data Layer (Database & Storage):</strong> Leverages SQL Server 2022 for structured data storage, complemented by local file storage initially, with plans to migrate to Azure Blob storage for media content.</li>
+      </ul>
+      The system also adopts a microservices approach, ensuring each module (authentication, social interactions, e-commerce, and recommendations) is independently scalable and maintainable.
+    </p>
+    <h5 class="card-title">2.2 Technology Stack</h5>
+    <p class="card-text">
+      The platform incorporates cutting-edge technologies to ensure a robust, secure, and efficient operational environment:
+      <ul>
+        <li><strong>Frontend:</strong> Razor Views and Bootstrap 5 enable dynamic and responsive UI development.</li>
+        <li><strong>Backend:</strong> .NET Core MVC 6.0 and C# 10 form the backbone of the server-side logic and service orchestration.</li>
+        <li><strong>Database:</strong> SQL Server 2022 is used for data management, providing a reliable and scalable solution.</li>
+        <li><strong>Storage:</strong> The initial phase uses local file storage, with a planned upgrade to Azure Blob for enhanced scalability.</li>
+        <li><strong>Payment Gateway:</strong> Integration with Stripe and PayPal APIs ensures secure and PCI DSS-compliant payment processing.</li>
+        <li><strong>Machine Learning:</strong> ML.NET drives the recommendation engine to personalize content and product listings.</li>
+        <li><strong>Security:</strong> JWT authentication and AES-256 encryption guarantee data integrity and confidentiality.</li>
+        <li><strong>Hosting:</strong> The solution starts on-premises and is designed for future cloud integration using platforms like Azure or AWS.</li>
+      </ul>
+    </p>
+  </div>
+</div>-->
+<!-- 3. System Components -->
+<!--<div class="card">
+  <div class="card-header bg-info text-white">3. System Components</div>
+  <div class="card-body">
+    <h5 class="card-title">3.1 Authentication & Authorization</h5>
+    <p class="card-text">
+      The system employs robust security measures by integrating JWT for secure session management and OAuth2 for third-party authentication (including Google and Facebook). Additionally, Role-Based Access Control (RBAC) ensures that permissions are appropriately managed, safeguarding sensitive operations and data.
+    </p>
+    <h5 class="card-title">3.2 Social Features</h5>
+    <p class="card-text">
+      SocialConnect+ offers a suite of social interaction tools that empower users to create detailed profiles, post multimedia content, and engage through likes, comments, and reactions. Enhanced by encrypted chat functionalities utilizing AES-256 and the Signal Protocol, the platform ensures secure and private communications.
+    </p>
+    <h5 class="card-title">3.3 E-Commerce Features</h5>
+    <p class="card-text">
+      The e-commerce module enables sellers to establish virtual shops, manage product listings, and execute secure transactions. Integration with leading payment gateways (Stripe and PayPal) ensures compliance with PCI DSS, while embedded analytics provide insights for sales tracking and performance optimization.
+    </p>
+    <h5 class="card-title">3.4 Discovery & Recommendations</h5>
+    <p class="card-text">
+      A sophisticated hybrid feed algorithm, powered by ML.NET, curates content tailored to individual user preferences. Geolocation filtering further refines content delivery by prioritizing region-specific information, while an ad targeting engine optimizes marketing efforts for maximum engagement.
+    </p>
+    <h5 class="card-title">3.5 Administration & Compliance</h5>
+    <p class="card-text">
+      Administrative tools provide comprehensive monitoring and logging of system activities. Automated processes ensure GDPR compliance through data anonymization, and detailed audit trails maintain accountability. These mechanisms are crucial for operational transparency and regulatory adherence.
+    </p>
+  </div>
+</div>-->
+<!-- 4. Data Flow Diagram -->
+<!--<div class="card">
+  <div class="card-header bg-dark text-white">4. Data Flow Diagram</div>
+  <div class="card-body">
+    <h5 class="card-title">Data Processing Workflow</h5>
+    <p class="card-text">
+      The data flow diagram visually represents the lifecycle of a user request, from the initial frontend interaction to the backend processing and data retrieval. The workflow is as follows:
+      <ol>
+        <li><strong>User Request:</strong> A user initiates a request via the interface.</li>
+        <li><strong>Backend Processing:</strong> The application layer processes the request through business logic and service orchestration.</li>
+        <li><strong>Database Interaction:</strong> Data is accessed or stored using SQL Server 2022 via Entity Framework.</li>
+        <li><strong>ML Processing:</strong> ML.NET pipelines analyze user behavior and generate personalized recommendations.</li>
+        <li><strong>Response Delivery:</strong> Processed data is sent back to the frontend for display.</li>
+      </ol>
+    </p>
+  </div>
+</div>-->
+<!-- 5. External Interfaces -->
+<!--<div class="card">
+  <div class="card-header bg-warning text-dark">5. External Interfaces</div>
+  <div class="card-body">
+    <h5 class="card-title">Interface Specifications</h5>
+    <p class="card-text">
+      SocialConnect+ integrates with several external systems to extend its functionality:
+      <ul>
+        <li><strong>RESTful API:</strong> Enables JSON-based communication between the frontend and backend services.</li>
+        <li><strong>Payment Gateway API:</strong> Facilitates secure transactions via Stripe and PayPal.</li>
+        <li><strong>Cloud Storage API:</strong> Connects to Azure Blob Storage for scalable media management.</li>
+        <li><strong>ML.NET API:</strong> Provides endpoints for advanced machine learning operations, enhancing the recommendation engine.</li>
+      </ul>
+    </p>
+  </div>
+</div>-->
+<!-- 6. Security & Performance Considerations -->
+<!--<div class="card">
+  <div class="card-header bg-danger text-white">6. Security & Performance Considerations</div>
+  <div class="card-body">
+    <h5 class="card-title">6.1 Security Measures</h5>
+    <p class="card-text">
+      The platform employs industry-leading security protocols to ensure data protection and system integrity. Data at rest is encrypted using AES-256, while secure TLS protocols protect data in transit. JWT tokens are used for authentication, complemented by strict role-based access controls. Regular penetration testing is conducted to proactively identify and mitigate security vulnerabilities.
+    </p>
+    <h5 class="card-title">6.2 Performance Optimization</h5>
+    <p class="card-text">
+      To ensure rapid response times and high availability, the system incorporates several performance enhancements. These include caching strategies (using Redis), load balancing via Nginx, and asynchronous processing for non-critical background tasks such as ML model updates. Together, these measures ensure that the platform remains responsive and scalable under load.
+    </p>
+  </div>
+</div>-->
+<!-- 7. Deployment Strategy -->
+<!--<div class="card">
+  <div class="card-header bg-success text-white">7. Deployment Strategy</div>
+  <div class="card-body">
+    <h5 class="card-title">Phased Deployment</h5>
+    <p class="card-text">
+      The deployment strategy for SocialConnect+ is structured in multiple phases to minimize risk and ensure continuity:
+      <ul>
+        <li><strong>Phase 1:</strong> On-premises deployment using dedicated servers to establish a robust foundation.</li>
+        <li><strong>Phase 2:</strong> Transition to a hybrid cloud model through containerization, enhancing flexibility and resource utilization.</li>
+        <li><strong>Phase 3:</strong> Full migration to a cloud environment using Azure VM Scale Sets or AWS EC2 to maximize scalability and performance.</li>
+      </ul>
+    </p>
+  </div>
+</div>-->
+<!-- 8. Conclusion -->
+<!--<div class="card">
+      <div class="card-header bg-secondary text-white">8. Conclusion</div>
+      <div class="card-body">
+        <h5 class="card-title">Final Thoughts</h5>
+        <p class="card-text">
+          This document provides a detailed and professionally structured blueprint for the architecture of SocialConnect+. By integrating advanced social networking functionalities with secure e-commerce operations and machine-learning-driven insights, the platform is well-positioned to meet both current and future demands. The comprehensive design and robust technology stack ensure that SocialConnect+ remains scalable, secure, and responsive, establishing a solid foundation for ongoing innovation.
+        </p>
+      </div>
+    </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>-->
