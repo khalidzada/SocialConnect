@@ -497,6 +497,7 @@ It provides the foundation that individual module documentation builds upon.
 ### Requirements & Product Definition
 
 * [Project Overview](docs/requirements/Project-Overview.md)
+* [Social Connect Feasibility](docs/requirements/Merket-Value-and-Business-Model.md)
 * [Software Requirements Specification](docs/requirements/SRS.md)
 
 ### System Architecture
