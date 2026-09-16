@@ -501,7 +501,8 @@ It provides the foundation that individual module documentation builds upon.
 
 ### System Architecture
 
-* [System Architecture](docs/architecture/Architecture.md)
+- [System Architecture](docs/architecture/Architecture.md)
+- [Detailed System Design](docs/architecture/Detailed-Design.md)
 * [Event & Notification Architecture](docs/architecture/Event-Notification-Architecture.md)
 * [Alerting Architecture](docs/architecture/Alerting-Architecture.md)
 * [Administration Architecture](docs/architecture/Administration-Architecture.md)
