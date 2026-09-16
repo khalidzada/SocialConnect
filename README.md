@@ -506,7 +506,7 @@ It provides the foundation that individual module documentation builds upon.
 * [Event & Notification Architecture](docs/architecture/Event-Notification-Architecture.md)
 * [Alerting Architecture](docs/architecture/Alerting-Architecture.md)
 * [Administration Architecture](docs/architecture/Administration-Architecture.md)
-* [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS.md)
+* [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS)
 * 
 
 ### Cross-Cutting Engineering
