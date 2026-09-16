@@ -2,9 +2,9 @@
 
 ## Hybrid Social Network & E-Commerce Platform
 
-**SocialConnect** is a long-term engineering project for designing and developing a modular social-network and e-commerce platform using the **Microsoft .NET ecosystem**.
+**SocialConnect** is a long-term software engineering project for designing and developing a modular social-network and e-commerce platform using the **Microsoft .NET ecosystem**.
 
-The project explores the complete lifecycle of a modern application — from requirements and architecture through implementation, database design, APIs, reusable UI components, media processing, event-driven workflows, notifications, testing, and technical documentation.
+The project covers the complete lifecycle of a modern application — from requirements and architecture through domain modeling, implementation, database design, APIs, reusable UI components, media processing, event-driven workflows, notifications, alerting, testing, and technical documentation.
 
 > **Project status:** Active development and continuous architectural refinement.
 
@@ -16,23 +16,27 @@ SocialConnect combines social interaction and commerce capabilities within a sin
 
 The platform is designed around concepts such as:
 
-* User profiles and social relationships
+* User identity and profiles
+* Social relationships
 * Posts and content publishing
 * Comments and threaded discussions
 * Reactions
 * Sharing
 * Media management
-* Feed generation
+* Feed generation and discovery
 * Notifications
 * Event-driven processing
-* E-commerce and marketplace capabilities
-* Products, shops and vendors
+* Marketplace and e-commerce capabilities
+* Products, shops, and vendors
 * Administrative governance and moderation
 * Auditing and soft deletion
 * Extensible alerting
 * API-based application integration
+* Local and global discovery
 
-The project is being developed with an emphasis on **maintainability, separation of responsibilities, explicit architectural boundaries, reusable components, and production-oriented engineering practices**.
+The long-term product direction is to bridge social discovery and marketplace commerce, combining community interaction with buying and selling capabilities. The marketplace direction is intended to support both **local discovery** and broader/global discovery while remaining extensible for future commerce capabilities.
+
+The project emphasizes **maintainability, explicit ownership, separation of responsibilities, reusable components, well-defined contracts, testability, and production-oriented engineering practices**.
 
 ---
 
@@ -73,11 +77,12 @@ The project is being developed with an emphasis on **maintainability, separation
 * Unit of Work
 * Application services
 * Domain-oriented services
-* Loader abstractions
-* Context builders / orchestrators
+* Entity loader abstractions
+* Context builders and orchestration
 * Event-driven architecture
 * Transactional Outbox
 * Notification orchestration
+* Generic alerting
 * Reusable UI components
 * Manual mapping
 * Automated testing and validation
@@ -86,7 +91,9 @@ The project is being developed with an emphasis on **maintainability, separation
 
 # 🧭 Architecture Overview
 
-The current architecture is intentionally designed around **clear ownership and separation of responsibilities**.
+SocialConnect is currently designed as a **layered modular monolith**.
+
+The system maintains explicit modular boundaries while operating within a single ASP.NET Core MVC application.
 
 At a high level:
 
@@ -114,28 +121,86 @@ Persistence & Infrastructure
    ├── Entity Framework Core
    ├── SQL Server
    ├── Identity
-   └── External / Integration Infrastructure
+   └── External / Integration Adapters
 ```
 
-Controllers remain thin and application orchestration owns the coordination of a use case.
+Controllers remain thin.
 
-The architecture deliberately avoids placing business workflows, repository access, or feature-specific responsibilities inside controllers and UI components.
+Application orchestration coordinates use cases and workflows.
+
+Business services own business rules.
+
+Persistence infrastructure owns database access.
+
+Reusable UI components own their own UI state and behavior.
+
+External providers are isolated behind infrastructure adapter boundaries.
 
 ---
 
-# 🧩 Major Engineering Domains
+# 🧩 Core Architectural Principles
 
-The project has evolved into a collection of interconnected engineering domains.
+SocialConnect follows a set of explicit architectural rules.
+
+### Ownership
+
+A reusable component owns everything within its domain.
+
+Consumers configure it, call its public API, subscribe to its events, and react to its results.
+
+Consumers do not implement or control the component's internal behavior.
+
+### Separation of responsibilities
+
+Controllers, application services, business services, repositories, infrastructure, and UI components have distinct responsibilities.
+
+### Explicit contracts
+
+Important architectural and application contracts are defined before implementation where appropriate.
+
+### Server authority
+
+The server owns authoritative validation, authorization, database state, workflows, and business rules.
+
+### Minimal client responsibility
+
+JavaScript primarily provides UI interaction, API communication, lifecycle management, and minimal client-side state.
+
+### Reusability
+
+Reusable behavior is implemented through components and stable public contracts rather than duplicated feature-specific code.
+
+### Extensibility
+
+New functionality should normally be introduced through configuration, policies, contracts, or new modules rather than modifying unrelated component internals.
+
+### Small services
+
+Services should remain focused and readable. Large workflows should be decomposed into orchestration and specialized services rather than creating large "God services."
+
+### Documentation as an engineering artifact
+
+Requirements, architecture, module contracts, implementation decisions, workflows, and testing strategies are documented alongside the system.
+
+---
+
+# 📦 Major Engineering Domains
+
+SocialConnect is developed as a collection of cooperating application domains and reusable capabilities.
 
 ## 👤 Identity & User Profile
 
-Identity is responsible for authentication and identity concerns, while business profile information remains within the application domain.
+Identity is responsible for authentication and identity concerns.
+
+Business profile information is maintained separately from the Identity representation.
+
+`ApplicationUser` remains focused on Identity concerns, while business profile information belongs to the application domain.
 
 ---
 
 ## 📝 Post Creation
 
-The post creation workflow is designed as an explicit application pipeline:
+Post creation is implemented as an explicit application workflow:
 
 ```text
 Post Composer
@@ -158,7 +223,7 @@ PostCreationService
 PostCreationResult
 ```
 
-This keeps post creation orchestration separate from generic post persistence responsibilities.
+The workflow keeps post creation orchestration separate from generic post persistence responsibilities.
 
 ---
 
@@ -192,7 +257,9 @@ Finalization      Assignment
 Final Media      Entity Association
 ```
 
-Finalization and assignment remain separate responsibilities.
+Finalization and assignment are separate responsibilities.
+
+The MediaUploader is designed as a consumer-independent reusable component.
 
 ---
 
@@ -213,15 +280,21 @@ The comment subsystem supports:
 
 ## ❤️ Reactions
 
-Reactions are implemented through a reusable target-oriented mechanism.
+Reactions use a target-oriented mechanism that can operate across supported target types.
 
-The architecture supports reaction operations across supported target types while keeping target resolution explicit.
+The target mechanism is based on:
+
+```text
+TargetType + TargetId
+```
+
+This allows supported features to share a consistent target resolution model.
 
 ---
 
 ## 🔁 Sharing
 
-Internal sharing is represented as a relationship between posts rather than by duplicating the original post content or media.
+Internal sharing is represented through a relationship between posts rather than duplication of the original content or media.
 
 ```text
 Original Post
@@ -237,17 +310,19 @@ Shared content is resolved through the feed/application layer.
 
 ---
 
-# 📣 Event & Notification Architecture
+# 📣 Event & Notification Platform
 
-SocialConnect contains a dedicated event and notification architecture.
+SocialConnect contains a dedicated event and notification platform.
 
-The design distinguishes between:
+The architecture distinguishes domain events from integration/outbox events.
+
+The overall processing model is:
 
 ```text
-Domain Events
+Business Operation
       │
       ▼
-Integration / Outbox Events
+Domain Event
       │
       ▼
 Transactional Outbox
@@ -276,27 +351,29 @@ Delivery Planning
       └── SMS
 ```
 
-The transactional outbox design includes concepts such as:
+The transactional outbox architecture includes:
 
 * Reliable event persistence
 * Dispatch status
 * Retry handling
-* Lease / claim processing
+* Lease/claim processing
 * Dead-letter handling
 * Idempotency
 * SQL Server-safe worker processing
 
-Notification persistence remains the source of truth, while real-time technologies such as SignalR are treated as delivery mechanisms rather than the notification system itself.
+Notification persistence is the source of truth.
+
+Real-time mechanisms such as SignalR are treated as delivery mechanisms rather than the notification source of truth.
 
 ---
 
-# 🚨 Alerting Architecture
+# 🚨 Alerting Platform
 
-The alerting platform is designed as a **generic and extensible capability**.
+SocialConnect includes a generic alerting architecture intended to support operational conditions across multiple modules.
 
-Operational conditions are not intended to become a giant hard-coded switch inside a central alert service.
+The alerting platform is deliberately designed so that individual operational conditions do not become a giant hard-coded switch inside a central alert service.
 
-Instead:
+The conceptual boundary is:
 
 ```text
 Operational Module
@@ -314,9 +391,7 @@ Alert Processing
 Configured Delivery
 ```
 
-This allows future modules to introduce operational alert sources without destabilizing the generic alerting infrastructure.
-
-Potential source domains include:
+Potential alert sources may include:
 
 * Posts
 * Comments
@@ -328,20 +403,22 @@ Potential source domains include:
 * Administration
 * Other operational modules
 
+Each source is intended to integrate through the generic alerting contract rather than introducing source-specific behavior into the generic platform.
+
 ---
 
 # 🛡️ Administration, Governance & Moderation
 
 Administration is designed as a privileged subsystem inside the existing MVC application.
 
-The design intentionally avoids ASP.NET Core Areas.
+The architecture intentionally does not use ASP.NET Core Areas for Administration.
 
-The administration architecture includes concepts such as:
+The Administration domain includes:
 
 * Administrative governance
 * Moderation
 * Reporting
-* Review / case management
+* Review and case management
 * Decisions and actions
 * Marketplace governance
 * Notification configuration
@@ -350,15 +427,13 @@ The administration architecture includes concepts such as:
 * Maintenance mode
 * Auditing
 
-Domain ownership remains enforced through application and domain services rather than direct administrative table manipulation.
+Administrative operations use application/domain services and respect domain ownership rather than bypassing business rules through direct table manipulation.
 
 ---
 
 # 🧱 Reusable UI Architecture
 
-Reusable UI components follow a consistent structure.
-
-A component can include:
+Reusable UI follows a consistent ViewComponent-based architecture:
 
 ```text
 ViewComponent
@@ -372,290 +447,372 @@ ViewComponent
       └── Documentation
 ```
 
-The JavaScript architecture uses application modules with explicit lifecycle concepts such as:
+The Builder configures the ViewModel.
+
+The ViewComponent renders.
+
+JavaScript provides interaction and lifecycle management.
+
+The global `site.js` foundation contains shared infrastructure such as:
 
 ```text
-register
-init
-bind
-destroy
+App.Events
+App.Modules
+Utilities
+Bootstrap/Foundation
 ```
 
-Feature-specific API and business logic is kept outside the global `site.js` foundation.
+Feature-specific API and business logic does not belong in `site.js`.
 
 ---
 
 # 📚 Documentation
 
-The repository contains **two generations of documentation**:
+The SocialConnect documentation is organized into **project-level documentation** and **module-level documentation**.
 
-1. **Current engineering documentation** — the architecture and implementation decisions that describe the evolving/current system.
-2. **Original / historical project documentation** — the earlier project requirements, designs and planning documents that remain valuable as part of the project's development history.
+The root `README.md` is the primary documentation entry point for the repository.
 
-This distinction is intentional.
+The documentation structure is intentionally designed to grow incrementally as each architectural and implementation domain is finalized.
 
-> **Important:** historical documents should not automatically be interpreted as the current implementation contract.
+## Documentation Principles
+
+Documentation should:
+
+* Be maintained primarily in **Markdown**
+* Reflect the current architectural contract
+* Clearly distinguish requirements, architecture, implementation, and testing
+* Be organized around stable project-level and module-level boundaries
+* Preserve traceability between requirements and implementation
+* Document important decisions for future maintenance and development
+* Be added only when the corresponding content has been properly analyzed and finalized
 
 ---
 
-# 📘 Current Engineering Documentation
+# 📘 Project-Level Documentation
 
-New documentation should be added primarily in **Markdown (`.md`)**.
+Project-level documentation describes the system as a whole.
 
-As the project continues to evolve, the current documentation index will grow.
+It provides the foundation that individual module documentation builds upon.
 
-### Architecture
+### Requirements & Product Definition
 
-* [Current Architecture](docs/architecture/Architecture.md)
+* [Project Overview](docs/requirements/Project-Overview.md)
+* [Software Requirements Specification](docs/requirements/SRS.md)
+
+### System Architecture
+
+* [System Architecture](docs/architecture/Architecture.md)
 * [Event & Notification Architecture](docs/architecture/Event-Notification-Architecture.md)
 * [Alerting Architecture](docs/architecture/Alerting-Architecture.md)
 * [Administration Architecture](docs/architecture/Administration-Architecture.md)
 
-### Domain & Application Engineering
+### Cross-Cutting Engineering
 
-* [Media Architecture](docs/engineering/Media-Architecture.md)
-* [Post Creation](docs/engineering/Post-Creation.md)
-* [Recipient Resolution](docs/engineering/Recipient-Resolution.md)
-* [Notification Module](docs/engineering/Notification-Module.md)
+Project-wide engineering documentation will cover shared mechanisms such as:
 
-### Testing & Validation
+* Architecture conventions
+* Shared contracts
+* Reusable component conventions
+* Media infrastructure
+* Event and notification infrastructure
+* Alerting infrastructure
+* Security conventions
+* Persistence conventions
+* External integration boundaries
+
+Additional documents will be linked here as they are finalized.
+
+---
+
+# 🧩 Module Documentation
+
+Each major SocialConnect module will have its own documentation set.
+
+Module documentation is intended to preserve both the **requirements** and the **engineering implementation knowledge** necessary to understand, maintain, extend, and audit the module in the future.
+
+A module documentation set may contain:
+
+```text
+Module
+│
+├── Requirements
+├── Architecture / Design
+├── Implementation Contract
+├── Application Workflows
+├── Domain Rules
+├── API Contract
+├── UI / Component Documentation
+├── Events & Notifications
+├── Integration Boundaries
+├── Testing
+└── Implementation Notes
+```
+
+Not every module requires every document.
+
+Only the documents relevant to the module should be created.
+
+### Current Module Documentation
+
+Module documentation will be added progressively as each module is analyzed, finalized, implemented, and validated.
+
+Current and future module areas include:
+
+* Identity & Profiles
+* Feed
+* Posts
+* Post Creation
+* Comments
+* Reactions
+* Sharing
+* Media
+* Notifications
+* Events
+* Alerting
+* Marketplace
+* Products
+* Shops
+* Orders
+* Payments
+* Administration
+* Moderation
+* Reporting
+
+The links for each module will be added here when the corresponding documentation has been finalized.
+
+---
+
+# 🔧 Engineering & Implementation Documentation
+
+Engineering documentation records implementation-level knowledge that is useful beyond a single feature.
+
+Examples include:
+
+* Reusable UI components
+* Media pipeline
+* Loader abstractions
+* Context builders
+* Application orchestration
+* Repository and Unit of Work conventions
+* Event processing
+* Notification orchestration
+* Recipient resolution
+* Alert source integration
+* External integration adapters
+* Shared JavaScript module conventions
+
+These documents complement the module documentation rather than replacing it.
+
+---
+
+# 🌐 API Documentation
+
+API documentation will be maintained separately from the system-level requirements.
+
+API documentation will describe finalized contracts including:
+
+* Routes
+* HTTP methods
+* Request DTOs
+* Response models
+* Authorization requirements
+* Validation rules
+* Error behavior
+* Ownership rules
+* Integration contracts
+
+Only finalized API contracts should be documented as authoritative.
+
+---
+
+# 🧪 Testing & Validation Documentation
+
+Testing documentation will contain both project-wide strategy and module-specific validation.
+
+### Project-Level Testing
 
 * [Testing Strategy](docs/testing/Testing-Strategy.md)
 
-> Additional documents will be added here as their implementation and architecture are finalized.
+### Module-Level Testing
+
+Individual modules may contain documentation covering:
+
+* Unit tests
+* Integration tests
+* Application workflow tests
+* API tests
+* UI/component validation
+* Persistence tests
+* Event/outbox tests
+* Notification tests
+* Alerting tests
+* End-to-end workflows
+
+Module-specific testing documentation will be linked from the relevant module documentation section.
 
 ---
 
-# 📜 Original / Historical Documentation
+# 🗄️ Database Documentation
 
-The repository's original HTML documentation is intentionally retained.
+Database documentation will describe finalized persistence architecture, including:
 
-These documents provide valuable historical context for the evolution of SocialConnect.
+* Entity relationships
+* Constraints
+* Keys
+* Indexes
+* Ownership boundaries
+* Soft-delete behavior
+* Auditing
+* Transactional requirements
+* Module-specific persistence design
 
-## Requirements
-
-* [Sprint Implementation](SprintImplementation.html)
-* [Product Requirements Document](prd.html)
-* [Software Requirements Specification](SRS.html)
-* [API Specification](APISpecDoc.html)
-
-## Design
-
-* [High-Level Architecture](highlevelarchite.html)
-* [Detailed Design](DetailDesignDoc.html)
-* [Technical Design Document](TDD.html)
-* [Wireframes](Wireframe.html)
-* [Database Design](DbDesignDoc.html)
-
-## Planning
-
-* [Project Plan](projectplan.html)
-* [DevOps Strategy](DevopStr.html)
-* [Test Plan](testplan.html)
-* [Test Cases](testcase.html)
-
-## Supporting Documentation
-
-* [Project Objectives](objectives.html)
-* [Technology Overview](technology.html)
+Database documentation will be updated as the corresponding domain/module contracts are finalized.
 
 ---
 
-# 🌐 Visual Documentation Portal
+# 🔌 External Integrations
 
-The repository also contains an original browser-based documentation portal.
+External integrations follow a strict adapter-boundary principle.
 
-### [Open SocialConnect Documentation Portal](index.html)
+```text
+Application / Domain
+        │
+        ▼
+Internal Contract
+        │
+        ▼
+Infrastructure Adapter
+        │
+        ▼
+External Provider
+```
 
-The portal provides a graphical navigation layer for the original HTML documentation.
+Application and domain services must not depend directly on external provider SDKs, payload models, endpoints, or authentication mechanisms.
 
-It organizes documentation into areas such as:
+Each external integration will receive its own documentation when implemented.
 
-* Requirements
-* Design
-* Planning
-* Architecture
-* Project objectives
-* Technology
-* Testing
+---
 
-The original portal is preserved rather than replaced because it represents an important part of the project's documentation history.
+# 🌍 Localization, Globalization & Geographic Discovery
+
+Geographic context is intended to be a shared capability across SocialConnect's social and marketplace domains.
+
+The product direction includes:
+
+* Country and city context
+* Local discovery
+* Regional marketplace behavior
+* Broader/global discovery
+* Locale-aware user experiences
+* Future language and cultural localization
+* Future currency, taxation, shipping, and regional commerce rules
+
+Implemented capabilities will be documented separately from future globalization and marketplace capabilities.
+
+---
+
+# 📈 Development & Documentation Lifecycle
+
+SocialConnect documentation follows the same engineering lifecycle as the software.
+
+```text
+Requirement
+     │
+     ▼
+Analysis
+     │
+     ▼
+Architecture
+     │
+     ▼
+Design / Contract
+     │
+     ▼
+Implementation
+     │
+     ▼
+Validation / Testing
+     │
+     ▼
+Documentation
+     │
+     ▼
+Review / Refinement
+```
+
+For major modules, the objective is to preserve enough documentation that the implementation can be understood and maintained without relying solely on historical conversations or undocumented decisions.
+
+---
+
+# 🔄 Documentation Status
+
+Documentation is continuously expanded.
+
+A document may represent one of several states:
+
+| Status          | Meaning                                                        |
+| --------------- | -------------------------------------------------------------- |
+| **Draft**       | Under analysis and subject to change                           |
+| **Reviewed**    | Technically reviewed but not yet locked                        |
+| **Locked**      | Architectural or implementation contract approved for use      |
+| **Implemented** | Corresponding functionality implemented                        |
+| **Validated**   | Implementation has been tested against its documented contract |
+| **Superseded**  | Replaced by a newer authoritative document                     |
+
+The repository should maintain **one authoritative document for each contract**.
+
+Duplicate competing versions of the same architectural or requirements document should not be created.
+
+---
+
+# 🚀 Documentation Roadmap
+
+The documentation repository will grow incrementally.
+
+The general sequence is:
+
+```text
+Project Definition
+       │
+       ▼
+System Architecture
+       │
+       ▼
+Bounded Contexts / Module Boundaries
+       │
+       ▼
+Module Requirements
+       │
+       ▼
+Module Architecture / Design
+       │
+       ▼
+Implementation Contract
+       │
+       ▼
+API / UI / Event Contracts
+       │
+       ▼
+Testing & Validation
+```
+
+As each document is finalized, its link will be added to the appropriate section of this README.
+
+The README structure itself is intended to remain stable while its documentation index grows.
 
 ---
 
 # 🖼️ Architecture & Design Diagrams
 
-The repository also contains visual architecture and design artifacts.
+The repository contains visual architecture and design artifacts where appropriate.
+
+Examples include:
 
 * [Complete Blueprint](completeblueprint.png)
 * [Complete Overview Blueprint / UML](completeoverviewblueprintuml.png)
 * [SocialConnect Class Diagram](socialconnectclassdiagram.png)
 
-Additional diagrams will be added as the architecture develops.
-
----
-
-# 🔄 Documentation Lifecycle
-
-Documentation is treated as part of the engineering process rather than as an afterthought.
-
-The preferred lifecycle is:
-
-```text
-Requirement
-    │
-    ▼
-Architecture
-    │
-    ▼
-Design
-    │
-    ▼
-Implementation
-    │
-    ▼
-Validation / Testing
-    │
-    ▼
-Documentation
-    │
-    ▼
-Architecture Refinement
-```
-
-When an architectural decision becomes important enough to affect future implementation, it should be documented explicitly.
-
----
-
-# 🗂️ Recommended Repository Documentation Structure
-
-As the repository grows, current documentation will gradually be organized under:
-
-```text
-docs/
-│
-├── architecture/
-│   ├── Architecture.md
-│   ├── Event-Notification-Architecture.md
-│   ├── Alerting-Architecture.md
-│   └── Administration-Architecture.md
-│
-├── engineering/
-│   ├── Media-Architecture.md
-│   ├── Post-Creation.md
-│   ├── Recipient-Resolution.md
-│   └── Notification-Module.md
-│
-├── api/
-│
-├── testing/
-│   └── Testing-Strategy.md
-│
-└── historical/
-```
-
-The original HTML documents can remain at their current locations until there is a specific reason to reorganize them.
-
----
-
-# 🧪 Engineering Principles
-
-The project follows several core engineering principles:
-
-### Explicit ownership
-
-Every important operation should have a clear owner.
-
-### Separation of responsibilities
-
-Controllers, UI components, application orchestration, business services, persistence, and infrastructure should not become mixed responsibilities.
-
-### Small services
-
-Services should remain focused and readable rather than becoming large "God services".
-
-### Explicit contracts
-
-Important architectural decisions and application contracts should be defined before implementation.
-
-### Server-first application state
-
-The server remains responsible for authoritative application state. JavaScript primarily handles interaction and minimal client-side state.
-
-### Reusable components
-
-Feature UI should be designed as reusable components rather than duplicated page-specific implementations.
-
-### Documentation as part of development
-
-Architecture, implementation decisions, workflows, and important boundaries should be documented as the system evolves.
-
----
-
-# 🛠️ Development Philosophy
-
-SocialConnect is developed incrementally.
-
-Architectural decisions are reviewed and locked before implementation where appropriate. Existing contracts should not be redesigned simply for stylistic reasons; changes should be driven by a genuine architectural requirement or contradiction.
-
-The goal is not simply to make the application work.
-
-The goal is to build a system that is:
-
-* Understandable
-* Maintainable
-* Testable
-* Extensible
-* Explicitly documented
-* Consistent in its architectural boundaries
-
----
-
-# 📈 Project Evolution
-
-SocialConnect began with traditional requirements, design, planning and feasibility documentation.
-
-Over time, the project has evolved toward a more structured architecture with stronger separation between:
-
-```text
-Domain
-Application
-Infrastructure
-Persistence
-UI
-Events
-Notifications
-Alerting
-Administration
-```
-
-The repository therefore intentionally contains both **historical design material and newer engineering documentation**.
-
-This makes the repository useful not only as a project archive, but also as a record of the system's architectural evolution.
-
----
-
-# 🚀 Future Documentation
-
-As development continues, this README will remain the **documentation index**.
-
-New documents should be added here when they become sufficiently stable and useful.
-
-Examples include:
-
-* Domain architecture documents
-* Module implementation contracts
-* Event catalogs
-* Notification workflows
-* Alert source documentation
-* API documentation
-* Database documentation
-* Testing documentation
-* Deployment documentation
-* Operational runbooks
-* Component documentation
-* Architecture decision records
-* Implementation checkpoints
+Additional diagrams will be added as the corresponding architecture is finalized.
 
 ---
 
@@ -669,18 +826,20 @@ GitHub: [@khalidzada](https://github.com/khalidzada)
 
 ---
 
-## 📌 Repository Navigation
+# 📌 Repository Navigation
 
-| Area         | Purpose                                     |
-| ------------ | ------------------------------------------- |
-| `README.md`  | Current GitHub documentation entry point    |
-| `docs/`      | Current engineering documentation           |
-| `index.html` | Original visual documentation portal        |
-| `*.html`     | Original / historical project documentation |
-| `*.png`      | Architecture and design diagrams            |
+| Location             | Purpose                                                                         |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `README.md`          | Primary project and documentation entry point                                   |
+| `docs/requirements/` | Project-level requirements and product definition                               |
+| `docs/architecture/` | System-wide architecture and cross-cutting architecture                         |
+| `docs/engineering/`  | Engineering and implementation documentation                                    |
+| `docs/api/`          | Finalized API contracts                                                         |
+| `docs/testing/`      | Project-wide testing and validation documentation                               |
+| `docs/modules/`      | Module-specific requirements, design, implementation, and testing documentation |
 
 ---
 
 > **SocialConnect is a continuously evolving engineering project.**
 >
-> The documentation is maintained alongside the architecture and implementation so that important technical decisions remain visible, traceable, and understandable.
+> The documentation is maintained alongside the architecture and implementation so that important requirements, technical decisions, module contracts, and engineering practices remain visible, traceable, and understandable.
