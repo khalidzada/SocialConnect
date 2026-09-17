@@ -509,8 +509,8 @@ It provides the foundation that individual module documentation builds upon.
 * [Event & Notification Architecture](docs/architecture/Event-Notification-Architecture.md)
 * [Alerting Architecture](docs/architecture/Alerting-Architecture.md)
 * [Administration Architecture](docs/architecture/Administration-Architecture.md)
-* [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS)
-* 
+* [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS.md)
+* [SocialConnect Application User and Identity ](docs/Modules/ApplicationUser/AppUserModel.md)
 
 ### Cross-Cutting Engineering
 
