@@ -511,6 +511,7 @@ It provides the foundation that individual module documentation builds upon.
 * [Administration Architecture](docs/architecture/Administration-Architecture.md)
 * [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS.md)
 * [SocialConnect Application User and Identity ](docs/Modules/ApplicationUser/AppUserModel.md)
+* [SocialConnect Application User Profile](docs/Modules/UserProfile/UserProfileSRS.md)
 
 ### Cross-Cutting Engineering
 
