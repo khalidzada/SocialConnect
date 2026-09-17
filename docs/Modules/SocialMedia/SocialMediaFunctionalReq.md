@@ -6,7 +6,7 @@
 **Platform:** ASP.NET Core MVC / .NET 8 / EF Core / SQL Server
 **Architecture:** Layered Modular Monolith
 **Primary Domains:** Posts, Media, Reactions, Comments, Sharing, Feed Generation, Social Graph Integration
-**Cross-Cutting Platforms:** Domain Events, Transactional Outbox, Event Dispatcher, Notification, Alerting, Audit, Authorization
+**Cross-Cutting Platforms:** Domain Events, Transactional Outbox, Event Dispatcher, Notification, Alerting, Audit, Authorization, Worker Health, External Dependency Adapters
 
 ---
 
@@ -14,31 +14,43 @@
 
 The Social Media subsystem is the core social-network capability of SocialConnect.
 
-It provides the ability for users to:
+It provides users with the ability to:
 
-* create and publish posts;
+* create social posts;
 * attach media to posts;
-* react to posts and other supported targets;
+* react to supported social targets;
 * create comments and replies;
 * attach media to comments;
 * share posts;
-* consume personalized feeds;
-* interact with content presented inside feeds;
-* participate in social relationships that influence feed eligibility;
-* receive downstream notification and alert effects from social actions.
+* consume personalized feed content;
+* interact with content presented through feeds;
+* participate in social relationships that influence content eligibility and ranking;
+* receive downstream notification effects from social activity;
+* participate in a social environment governed by authorization, moderation, privacy, and administrative policy.
 
-The subsystem must provide a **Facebook-class social experience and behavioral model** while remaining a native SocialConnect architecture.
+The subsystem is intended to provide a **Facebook-class social capability and behavioral model** at the product-function level while remaining a native SocialConnect implementation.
 
-The objective is **functional parity at the social capability level**, not source-code, implementation, database, or proprietary algorithm replication.
+This means SocialConnect may adopt established social-media concepts such as:
 
-Facebook publicly describes Feed as a personalized stream whose candidate stories are selected and then ranked using signals such as relationships, recency, engagement, and predicted user interest.
+* personalized feeds;
+* social-graph-driven content eligibility;
+* engagement signals;
+* ranking;
+* comments and replies;
+* reactions;
+* sharing;
+* media-rich posts;
+* privacy and visibility;
+* downstream notifications.
 
-SocialConnect therefore adopts the same fundamental architectural principle:
+It does **not** mean reproducing another platform's proprietary source code, database schema, implementation, ranking algorithm, infrastructure, or proprietary internal behavior.
+
+The Social Media subsystem is governed by the following fundamental principle:
 
 ```text
-Social Business Operation
+Business Operation
         ↓
-Domain State Change
+Authoritative Domain State Change
         ↓
 Domain Event
         ↓
@@ -46,29 +58,76 @@ Transactional Outbox
         ↓
 Event Dispatcher
         ↓
-Social Event Handler
+Event Consumer / Handler
         ↓
-Feed / Notification / Alert / Other Impact
+Business Impact
+        ├── Feed
+        ├── Notification
+        ├── Alerting
+        ├── Audit
+        ├── Projection / Cache
+        └── Other Approved Consumer
 ```
 
-The business operation itself remains independent from downstream consumers.
+A business operation is therefore independent from its downstream consequences.
 
 ---
 
-# 2. Architectural Position
+# 2. Scope
 
-The Social Media subsystem is composed of the following major capabilities:
+The Social Media subsystem covers:
+
+1. Post creation and lifecycle;
+2. Post visibility;
+3. Post location;
+4. Post media;
+5. Reactions;
+6. Comments and replies;
+7. Comment media;
+8. Internal and external sharing;
+9. Feed candidate generation;
+10. Feed eligibility;
+11. Feed distribution;
+12. Feed ranking;
+13. Feed timeline projection;
+14. Feed rendering;
+15. Social graph integration;
+16. downstream Notification integration;
+17. downstream Alerting integration;
+18. moderation and administrative policy integration;
+19. social-domain event integration;
+20. background processing required for scalable Feed distribution.
+
+The subsystem does **not** own:
+
+* the generic Event infrastructure;
+* the Transactional Outbox infrastructure;
+* the generic Notification platform;
+* the generic Alerting platform;
+* application-wide Worker Health;
+* external vendor integrations;
+* Identity infrastructure;
+* Administration infrastructure;
+* generic media storage infrastructure outside the Media module.
+
+Those capabilities are consumed through their established contracts.
+
+---
+
+# 3. Architectural Position
+
+The Social Media subsystem consists of distinct capabilities:
 
 ```text
 Social Media
 │
 ├── Post
 │   ├── Creation
-│   ├── Publication
-│   ├── Editing
+│   ├── Lifecycle
 │   ├── Visibility
 │   ├── Location
-│   └── Deletion / Restoration
+│   ├── Media
+│   └── Deletion
 │
 ├── Media
 │   ├── Upload Gateway
@@ -83,10 +142,10 @@ Social Media
 │   └── Remove
 │
 ├── Comment
-│   ├── Create
+│   ├── Creation
 │   ├── Reply
-│   ├── Edit
-│   ├── Delete
+│   ├── Editing
+│   ├── Deletion
 │   └── Tree Rendering
 │
 ├── Sharing
@@ -94,12 +153,12 @@ Social Media
 │   └── External Share
 │
 ├── Feed
-│   ├── Candidate Inventory
+│   ├── Candidate Generation
 │   ├── Eligibility
 │   ├── Distribution
 │   ├── Ranking
-│   ├── Timeline Projection
-│   └── Timeline Rendering
+│   ├── Projection
+│   └── Rendering
 │
 └── Social Graph Integration
     ├── Friends
@@ -109,238 +168,307 @@ Social Media
     └── Other Relationship Signals
 ```
 
-These are separate responsibilities.
+These capabilities have separate responsibilities.
 
-No single service should become responsible for all of them.
+No single Social Media service may become the owner of all of them.
 
 ---
 
-# 3. Fundamental Architectural Principle
+# 4. Fundamental Business Principle
 
-## 3.1 Business operation is the source of truth
+Every meaningful social business operation must have an authoritative business owner.
 
-Every meaningful social business transaction must be modeled as a business operation.
-
-Examples:
+Examples include:
 
 ```text
 Create Post
+Update Post
+Change Post Visibility
+Delete Post
+
 Add Reaction
 Change Reaction
 Remove Reaction
+
 Create Comment
-Create Reply
 Edit Comment
 Delete Comment
-Share Post
-Delete Share
+
+Create Internal Share
+Create External Share
+
+Upload Media
 Finalize Media
 Assign Media
 Remove Media Assignment
-Change Post Visibility
-Delete Post
-Restore Post
 ```
 
-The operation changes the authoritative domain state.
+The operation:
 
-The operation then raises the appropriate domain event.
+1. validates the request;
+2. authorizes the operation;
+3. changes authoritative domain state;
+4. raises the appropriate domain event where the event represents a committed business fact;
+5. persists the event through the Transactional Outbox when required by the Event contract;
+6. commits the authoritative transaction.
 
-The event becomes the durable integration point for downstream processing.
+Downstream consumers then determine what impact the business fact has.
 
 ---
 
-# 4. Event-Driven Social Architecture
+# 5. Business Event Does Not Mean Feed Item
 
-The canonical SocialConnect social workflow is:
+This is a foundational SocialConnect rule.
+
+> A business event does not automatically mean that a Feed item must be created.
+
+For example:
+
+```text
+Post.Created
+```
+
+may make a Post eligible for Feed processing.
+
+But:
+
+```text
+Reaction.Added
+```
+
+does not create another Post or another Feed story.
+
+Instead:
+
+```text
+Reaction.Added
+        ↓
+Engagement Signal
+        ↓
+Existing Feed Candidate / Projection
+```
+
+Likewise:
+
+```text
+Comment.Created
+```
+
+may affect:
+
+* engagement;
+* ranking;
+* notification;
+* activity;
+* moderation;
+* analytics;
+
+without creating another Feed story.
+
+The Event Impact Policy determines the downstream effect.
+
+---
+
+# 6. Canonical Event-Driven Social Architecture
+
+The canonical SocialConnect processing model is:
 
 ```text
 Business Operation
         ↓
 Application / Domain Service
         ↓
-Domain State Change
+Authoritative State Change
         ↓
 Domain Event
         ↓
-Transactional Outbox Persistence
+Transactional Outbox
         ↓
-Commit
+Transaction Commit
         ↓
-Outbox Dispatcher
+Outbox Processing / Dispatcher
         ↓
 Event Handler
         ↓
-Recipient / Target / Audience Resolution
-        ↓
-Business Impact
-        ├── Feed generation
-        ├── Feed update
+Impact Policy
+        ├── Feed
         ├── Notification
-        ├── Alert
+        ├── Alerting
         ├── Audit
-        └── Other domain consumers
-        ↓
-Tests / Observability / Retry
+        ├── Projection
+        └── Other Consumer
 ```
 
-The domain event must be persisted in the same transaction as the business state change whenever the event represents that committed business fact.
+The Event infrastructure remains a platform capability.
 
-Therefore:
+Social Media does not create a parallel event bus.
 
-> A post must never be considered successfully created while its required domain event is missing from the transactional boundary.
+Social Media does not create a parallel Outbox.
 
-Likewise:
+Social Media does not create a parallel dispatcher.
 
-> A reaction must never be persisted successfully while its required event is lost.
+Social Media does not create a parallel notification engine.
+
+Social Media does not create a parallel alert engine.
 
 ---
 
-# 5. Separation of Post Creation and Feed Generation
+# 7. Transactional Event Requirement
 
-This is one of the most important requirements of the Social Media architecture.
-
-## 5.1 Post creation is not feed generation
-
-Post creation owns:
-
-* authorization;
-* validation;
-* content creation;
-* post state;
-* visibility;
-* optional location;
-* media references;
-* post persistence;
-* post domain event.
-
-Post creation does **not** own:
-
-* calculating every recipient;
-* creating every feed item;
-* ranking;
-* feed pagination;
-* feed rendering;
-* notification delivery;
-* alert delivery.
+When a domain event represents a committed business fact, its required Outbox record must be persisted within the same transaction as the authoritative business state.
 
 Therefore:
 
 ```text
-PostCreationService
-        ↓
-Create Post
-        ↓
-PostCreated / PostPublished
-        ↓
-Transactional Outbox
-        ↓
-Commit
+Business State Change
++
+Required Outbox Event
+=
+One Transactional Boundary
 ```
 
-is complete as a business transaction.
+The system must not reach a committed state such as:
 
-Feed propagation occurs downstream.
+```text
+Post exists
+but
+Post.Created event was lost
+```
+
+when that event is part of the canonical event contract.
+
+The same principle applies to reactions, comments, shares, and other event-producing social operations.
 
 ---
 
-# 6. Asynchronous Feed Distribution
+# 8. Separation of Post Creation and Feed Generation
 
-SocialConnect Feed Generation is event-driven and may execute asynchronously.
+Post creation and Feed generation are explicitly separate responsibilities.
+
+## Post Creation owns
+
+* authorization;
+* validation;
+* content;
+* Post state;
+* visibility;
+* location;
+* media references;
+* Post persistence;
+* required Post domain event.
+
+## Post Creation does not own
+
+* calculating every Feed recipient;
+* Feed candidate distribution;
+* Feed ranking;
+* Feed pagination;
+* Feed rendering;
+* Notification delivery;
+* Alert delivery.
+
+Therefore:
+
+```text
+Post Creation
+      ↓
+Post State
+      ↓
+Social.Post.Created
+      ↓
+Transactional Outbox
+      ↓
+Commit
+```
+
+is the authoritative Post business transaction.
+
+Feed processing occurs downstream.
+
+---
+
+# 9. Asynchronous Feed Distribution
+
+Feed propagation may execute asynchronously.
+
+The canonical conceptual workflow is:
+
+```text
+User Creates Post
+        ↓
+Post Creation Transaction
+        ↓
+Post Persisted
+        ↓
+Social.Post.Created
+        ↓
+Outbox Persisted
+        ↓
+Transaction Committed
+        ↓
+Background Event Processing
+        ↓
+Feed Impact Handler
+        ↓
+Audience / Candidate Resolution
+        ↓
+Eligibility
+        ↓
+Distribution
+        ↓
+Feed Projection
+```
+
+Post creation must not synchronously fan out to every eligible Feed recipient.
+
+This allows Feed processing to scale independently of the request that created the Post.
+
+---
+
+# 10. Durable Background Processing
+
+The existing Transactional Outbox is the canonical durable hand-off between the authoritative business transaction and asynchronous processing.
 
 Conceptually:
 
 ```text
-User creates Post
-        ↓
-Post Creation Transaction
-        ↓
-Post persisted
-        ↓
-PostCreated event persisted
-        ↓
-Transaction committed
-        ↓
-Background dispatcher
-        ↓
-Feed event handler
-        ↓
-Audience / candidate resolution
-        ↓
-Feed distribution
-        ↓
-Feed projections / candidate records
+                 ┌────────────────────┐
+                 │   Post Operation   │
+                 └─────────┬──────────┘
+                           │
+                           ▼
+                 ┌────────────────────┐
+                 │ Domain State +     │
+                 │ Transactional      │
+                 │ Outbox             │
+                 └─────────┬──────────┘
+                           │
+                           ▼
+                 ┌────────────────────┐
+                 │ Event Processing   │
+                 │ / Dispatcher       │
+                 └─────────┬──────────┘
+                           │
+                           ▼
+                 ┌────────────────────┐
+                 │ Feed Handler       │
+                 └─────────┬──────────┘
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+           User A       User B       User C
+           Feed         Feed         Feed
 ```
 
-This permits the platform to scale independently of post creation.
-
-A successful post creation must not require the HTTP request to synchronously calculate and persist every user's feed.
+An in-memory queue must not become the authoritative bridge between a committed social operation and its downstream consequences.
 
 ---
 
-# 7. Feed "Dropbox" / Background Processing Concept
+# 11. Feed Is a Derived Distribution / Projection System
 
-SocialConnect adopts a durable background-processing concept for social distribution.
+The Post remains authoritative social content.
 
-A newly created business object is first committed as authoritative domain state.
-
-Its event is then placed into the transactional outbox.
-
-The outbox effectively becomes the durable hand-off point between:
-
-```text
-Business Transaction
-```
-
-and:
-
-```text
-Background Social Processing
-```
-
-The architecture therefore behaves conceptually like:
-
-```text
-                    ┌──────────────────┐
-                    │  Post Creation   │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Domain Database  │
-                    │  + Outbox Event  │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Background       │
-                    │ Dispatcher       │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Feed Processing  │
-                    └────────┬─────────┘
-                             │
-                ┌────────────┼────────────┐
-                ▼            ▼            ▼
-             User A       User B       User C
-             Feed         Feed         Feed
-```
-
-The important requirement is durability.
-
-The system must not depend on an in-memory queue that can lose the social operation after the database transaction succeeds.
-
-The transactional Outbox already established by SocialConnect is the canonical durable bridge.
-
----
-
-# 8. Feed Is a Projection / Distribution System
-
-The Feed subsystem does not become the owner of the Post domain.
-
-A Feed entry represents the distribution/presentation of social content to a user.
+Feed is a derived representation of content distributed to a viewer.
 
 Therefore:
 
@@ -348,23 +476,35 @@ Therefore:
 Post
 ```
 
-remains the authoritative content.
+is authoritative.
 
-The Feed contains a representation/reference to that content.
+The Feed may contain:
 
-It does not duplicate the Post as a second authoritative domain object.
+```text
+PostId
+ViewerId
+Distribution / Candidate Information
+Ranking / Ordering Information
+Projection Metadata
+```
+
+or another approved derived representation.
+
+The exact persistence model is an implementation concern governed by the Feed architecture.
+
+The fundamental requirement is:
+
+> Feed must never become the authoritative owner of Post content.
 
 ---
 
-# 9. Feed Must Not Own Reactions
+# 12. Feed Does Not Own Reactions
 
-A critical requirement:
+Feed has no independent reaction system.
 
-> Feed does not have its own independent reaction system.
+A reaction displayed in a Feed card is a reaction to the underlying target.
 
-A reaction displayed inside a Feed card is still a reaction to the underlying target.
-
-For example:
+Correct model:
 
 ```text
 Feed
@@ -372,7 +512,7 @@ Feed
       └── Reaction
 ```
 
-not:
+Incorrect model:
 
 ```text
 Feed
@@ -380,51 +520,42 @@ Feed
  └── PostReaction
 ```
 
-The Feed transports interaction to the target.
-
-Therefore:
+When the user reacts from Feed:
 
 ```text
-User clicks Like in Feed
-        ↓
-Feed identifies target
-        ↓
-Reaction endpoint
-        ↓
-ReactionService
-        ↓
-TargetType + TargetId + UserId
-        ↓
-Reaction state
+Feed UI
+    ↓
+Underlying Target
+    ↓
+Reaction Gateway
+    ↓
+Reaction Service
+    ↓
+Reaction State
 ```
 
-The Feed UI is merely one presentation surface for the reaction capability.
+The same Reaction subsystem may therefore be used from:
 
-The same Reaction system can therefore be used from:
-
-* Post detail;
 * Feed;
+* Post detail;
 * Comment;
-* Media;
-* other supported reactable targets.
+* other explicitly supported reactable targets.
 
 ---
 
-# 10. Reaction Requirements
+# 13. Reaction Requirements
 
-## 10.1 Single reaction gateway
+The Reaction subsystem must expose one canonical mutation gateway.
 
-The Reaction subsystem must expose one canonical mutation endpoint.
-
-Conceptually:
+The established endpoint is:
 
 ```text
 POST /api/reaction/toggle
 ```
 
-The endpoint receives the target and desired reaction context.
+The consumer supplies the target and requested reaction context.
 
-The Reaction service determines whether the operation means:
+The server determines whether the resulting business transition is:
 
 ```text
 Add
@@ -432,126 +563,115 @@ Change
 Remove
 ```
 
-based on the user's existing reaction state.
-
-The consumer does not need separate endpoints for:
-
-```text
-/add
-/remove
-/change
-```
+Consumers must not need separate mutation endpoints for each transition.
 
 ---
 
-# 11. Reaction Decision Model
+# 14. Reaction Transition Rules
 
-The canonical reaction transition is:
+The canonical state transition is:
 
 ```text
-No existing reaction
+No Existing Reaction
         +
-New reaction
+Requested Reaction
         ↓
-ADD
+Reaction.Added
 ```
 
 ```text
-Existing reaction A
+Existing Reaction A
         +
-New reaction B
+Requested Reaction B
         ↓
-CHANGE
+Reaction.Changed
 ```
 
 ```text
-Existing reaction A
+Existing Reaction A
         +
-Same reaction A
+Requested Reaction A
         ↓
-REMOVE
+Reaction.Removed
 ```
 
-Therefore the single mutation gateway effectively implements:
+The server is authoritative for this decision.
 
-```text
-Toggle / Resolve Reaction
-```
-
-rather than exposing implementation-specific operations to the UI.
+The client must not determine the authoritative transition.
 
 ---
 
-# 12. Reaction Targets
+# 15. Reaction Targeting
 
-Reaction targeting uses:
+Reaction targeting uses the canonical:
 
 ```text
 TargetType + TargetId
 ```
 
-This remains the canonical polymorphic target mechanism.
+mechanism.
 
-The Reaction subsystem must not introduce independent target-resolution mechanisms for each consumer.
+No consumer-specific polymorphic target mechanism may be introduced.
 
-Supported targets are determined by the canonical Reaction Target catalog.
+The Reaction target catalog determines which domain objects may be reactable.
 
 Known Social Media targets include:
 
 * Post;
 * Comment;
-* supported Media target;
-* other explicitly registered reactable domain objects.
+* explicitly supported Media targets;
+* other explicitly registered reactable objects.
 
-Feed is not itself a reaction target.
+Feed itself is not a Reaction target.
 
 ---
 
-# 13. Reaction Aggregate
+# 16. Reaction Aggregate
 
-Reactable domain entities may contain the canonical aggregate:
+Reactable entities may expose the established aggregate:
 
 ```text
 TotalReactionsCount
+
 ReactionAggregate
- ├── LikeCount
- ├── LoveCount
- ├── HahaCount
- ├── WowCount
- ├── SadCount
- └── AngryCount
+├── LikeCount
+├── LoveCount
+├── HahaCount
+├── WowCount
+├── SadCount
+└── AngryCount
 ```
 
-The aggregate belongs to the target domain object.
+The aggregate belongs to the authoritative reactable target.
 
-The Feed merely displays it.
+Feed only presents the resulting information.
+
+Feed must not maintain a competing reaction aggregate.
 
 ---
 
-# 14. Reaction Business Events
+# 17. Reaction Business Events
 
-The canonical event model must distinguish the business transition.
-
-At minimum:
+The canonical Social Reaction events are:
 
 ```text
-ReactionAdded
-ReactionChanged
-ReactionRemoved
+Social.Reaction.Added
+Social.Reaction.Changed
+Social.Reaction.Removed
 ```
 
-Each event represents a committed business fact.
+Each event represents a committed business transition.
 
 Example:
 
 ```text
-User selects Love on Post
+User selects Love
         ↓
-Reaction operation
+Reaction Operation
         ↓
-Existing reaction = Like
+Existing Reaction = Like
         ↓
-ReactionChanged
+Reaction.Changed
         ↓
 Transactional Outbox
         ↓
@@ -560,24 +680,24 @@ Dispatcher
 Consumers
 ```
 
-Consumers may include:
+Possible downstream consumers include:
 
-* Feed ranking/signal update;
-* notification;
-* alert;
+* Feed engagement/ranking signals;
+* Notification;
+* Alerting;
+* Audit;
 * analytics;
-* audit;
 * future recommendation systems.
 
-Reaction events must not directly manipulate Feed UI.
+Reaction events do not directly manipulate Feed UI.
 
 ---
 
-# 15. Comment Requirements
+# 18. Comment Requirements
 
 Comments are first-class social objects.
 
-A Comment must support:
+A Comment may contain:
 
 * author;
 * target;
@@ -586,34 +706,33 @@ A Comment must support:
 * parent comment;
 * reply relationship;
 * timestamps;
-* audit;
-* soft deletion;
+* audit information;
+* soft-delete state;
 * reaction support where enabled;
-* visibility/authorization;
-* notification/alert effects.
+* visibility/moderation state;
+* downstream notification and other event impacts.
 
-Comments may target supported social content using the canonical:
+Comment targets use:
 
 ```text
 TargetType + TargetId
 ```
 
-mechanism.
+where the target is supported by the Comment contract.
 
 ---
 
-# 16. Comment Tree
+# 19. Comment Tree
 
-Comments are represented as a tree.
+Comments form an authoritative parent-child structure.
 
-Conceptually:
+Example:
 
 ```text
 Post
 │
 ├── Comment A
 │   ├── Reply A1
-│   │   └── Reply A1.1
 │   └── Reply A2
 │
 ├── Comment B
@@ -622,34 +741,49 @@ Post
 └── Comment C
 ```
 
-The domain model must preserve parent-child relationships.
+The domain model must preserve the parent relationship.
+
+The presentation layer must not invent parent-child relationships independently.
 
 ---
 
-# 17. Comment Tree Depth
+# 20. Comment Depth Policy
 
-The maximum comment/reply depth is an administrative policy.
+Maximum permitted comment/reply depth is a server-side policy.
 
-The platform must not hard-code the presentation depth into the reusable CommentManager.
+The reusable CommentManager must not become the owner of the authoritative domain depth rule.
 
-The effective depth is determined by the configured Social/Comment policy.
+The effective policy may govern:
 
-This permits administrators to control:
-
-* maximum reply depth;
+* maximum permitted depth;
 * whether deeper replies are permitted;
-* whether deeper levels are collapsed;
-* tree rendering behavior;
-* pagination/lazy loading behavior;
+* rendering depth;
+* collapsed levels;
+* lazy loading;
+* pagination;
 * moderation constraints.
 
-The current reusable CommentManager already establishes a reply-depth constraint of two for its present UI contract; the final policy must therefore distinguish **domain-allowed depth** from **current component rendering depth**.
+The current CommentManager UI contract has a reply-depth constraint of two.
+
+That UI constraint must remain distinguishable from the broader domain policy.
+
+Therefore:
+
+```text
+Domain Policy
+      ↓
+Permitted Comment Depth
+      ↓
+Server ViewModel / Component Configuration
+      ↓
+CommentManager Rendering
+```
 
 ---
 
-# 18. Comment Tree Rendering
+# 21. Comment Tree Rendering
 
-Comment tree retrieval and rendering must support:
+Comment retrieval and presentation must support:
 
 * root comments;
 * child replies;
@@ -660,13 +794,12 @@ Comment tree retrieval and rendering must support:
 * authorization;
 * deleted comments;
 * moderation state;
-* maximum configured depth.
+* configured depth;
+* appropriate loading boundaries.
 
-The client must not independently reconstruct the authoritative comment tree from arbitrary API calls.
+The server provides the authoritative ViewModel structure.
 
-The server provides the correct ViewModel structure.
-
-JavaScript controls interaction such as:
+JavaScript may control:
 
 * expand;
 * collapse;
@@ -675,87 +808,92 @@ JavaScript controls interaction such as:
 * edit;
 * delete.
 
-It does not own business rules.
+JavaScript does not own:
+
+* authorization;
+* depth policy;
+* moderation rules;
+* target ownership;
+* deletion authority;
+* persistence rules.
 
 ---
 
-# 19. Comment Media
+# 22. Comment Media
 
-A Comment may contain **at most one media attachment**.
+A Comment supports at most one media attachment.
 
 Therefore:
 
 ```text
 Comment
- └── 0..1 CommentMedia
+ └── 0..1 Media Assignment
 ```
 
-A comment may contain:
+Permitted content may be:
 
 ```text
-text only
+Text only
 ```
 
 or:
 
 ```text
-text + one media
+Text + One Media
 ```
 
-or, where the business contract permits:
+and, if explicitly permitted by the Comment content policy:
 
 ```text
-media-only comment
+Media only
 ```
 
-The exact content validation policy remains server-owned.
+The server owns the final content-validation rule.
 
 ---
 
-# 20. Comment Media Must Use MediaUploader
+# 23. Comment Media Uses the Canonical Media Platform
 
-Comment creation must never implement its own upload pipeline.
+Comment creation must never implement a separate upload pipeline.
 
-The reusable:
+The Comment UI uses:
 
 ```text
 MediaUploader
 ```
 
-is the single UI upload gateway.
+through its public contract.
 
-The CommentManager consumes its public contract.
-
-It does not know:
+CommentManager must not know:
 
 * temporary storage implementation;
-* file-processing implementation;
 * physical storage path;
-* media finalization internals;
-* media assignment internals.
+* file-processing internals;
+* finalization internals;
+* assignment internals.
 
 ---
 
-# 21. Media Architecture
+# 24. Media as a Cross-Cutting Platform Capability
 
-Media is a cross-cutting platform capability.
+Media is not a Post-specific capability.
 
-It must be generic enough to serve:
+The Media subsystem must be reusable by:
 
 * Posts;
 * Comments;
 * User Profiles;
 * Shops;
 * Products;
-* other supported domains.
+* other approved domain objects.
 
-The Media module must therefore not be designed specifically around Posts.
+The Media platform therefore remains independent of the Social Media consumers that use it.
 
 ---
 
-# 22. MediaUploader as the Unique Upload Gateway
+# 25. MediaUploader as the Unique Upload Gateway
 
-The canonical architecture is:
+The canonical UI upload architecture is:
 
 ```text
 Consumer
@@ -771,74 +909,127 @@ Temporary Storage
 Media Domain
 ```
 
-The consumer is never allowed to bypass MediaUploader for ordinary UI upload workflows.
+The MediaUploader is the unique reusable upload gateway for ordinary UI upload workflows.
 
-The MediaUploader remains consumer-independent.
+Consumers must not create independent upload implementations.
 
 ---
 
-# 23. Automatic Media Upload
+# 26. MediaUploader Contract
 
-For automatic upload:
+The locked MediaUploader v1.0.0 contract includes:
+
+### Configuration
 
 ```text
-User selects file
+data-media-uploader-parent-dropzone
+```
+
+### Upload request
+
+```text
+Role
+Files
+```
+
+### Public API
+
+```text
+init
+destroy
+getInstance
+getMediaItems
+getMediaIds
+getExistingMedia
+getRemovedExistingMediaIds
+upload
+remove
+removeExisting
+cancel
+```
+
+### Lifecycle states
+
+```text
+idle
+uploading
+completed
+cancelled
+failed
+```
+
+### Event family
+
+```text
+media.uploader.*
+```
+
+The uploader remains consumer-independent.
+
+Post Composer and CommentManager configure and consume it; they do not alter its internal behavior.
+
+---
+
+# 27. Automatic Media Upload
+
+Automatic upload follows:
+
+```text
+User Selects File
         ↓
 MediaUploader
         ↓
-Upload endpoint
+Upload Endpoint
         ↓
 MediaUploadService
         ↓
-Temporary storage
+Temporary Storage
         ↓
-Media identifier
+Media Identifier
         ↓
-UI receives upload result
+UI Upload Result
 ```
 
-The uploaded media is not yet considered permanently part of the final business transaction.
+At this stage the media is staged/temporary.
 
-It is temporary/staged media.
+It is not yet automatically considered permanently assigned business media.
 
 ---
 
-# 24. Manual Media Upload
+# 28. Manual Media Upload
 
-The MediaUploader must also support controlled/manual workflows.
+The same MediaUploader must support controlled/manual workflows.
 
-The same gateway must support:
+The architecture supports:
 
 ```text
-Automatic upload
+Automatic Upload
 ```
 
 and:
 
 ```text
-Manual upload
+Manual Upload
 ```
 
-without requiring consumers to implement a second upload architecture.
+through the same Media gateway.
 
-The distinction belongs to the consumer workflow/configuration, not to separate media infrastructure.
+Consumers may control when the upload is initiated through configuration/public APIs.
+
+They must not create a second upload infrastructure.
 
 ---
 
-# 25. Media Finalization
+# 29. Media Finalization
 
-Finalization occurs only after the owning business transaction is successfully established.
-
-Canonical flow:
+Finalization is a distinct responsibility:
 
 ```text
 Temporary Media
-       ↓
-Business Transaction
-       ↓
-Finalize Media
-       ↓
-Final Storage
+        ↓
+MediaFinalizationService
+        ↓
+Final Media
 ```
 
 Finalization means:
@@ -847,33 +1038,33 @@ Finalization means:
 Temporary → Final
 ```
 
-It does not mean assigning the media to a business entity.
+It does not mean:
+
+```text
+Final → Assigned
+```
+
+and it does not assign the media to a Post, Comment, Product, Shop, or User.
 
 ---
 
-# 26. Media Assignment
+# 30. Media Assignment
 
-Assignment is a separate responsibility.
+Assignment is separate:
 
 ```text
-MediaFinalizationService
+Finalized Media
         ↓
-Temporary → Final
-```
-
-and:
-
-```text
 MediaAssignmentService
         ↓
-Finalized Media → Business Owner
+Business Owner / Target
 ```
 
 Therefore:
 
-> Finalization never assigns media.
+> Finalization never performs business ownership assignment.
 
-and:
+And:
 
 > Assignment never finalizes temporary media.
 
@@ -881,7 +1072,7 @@ This separation is mandatory.
 
 ---
 
-# 27. Media Lifecycle
+# 31. Media Lifecycle
 
 The canonical lifecycle is:
 
@@ -890,7 +1081,7 @@ Selected
    ↓
 Uploading
    ↓
-Uploaded to Temporary Storage
+Temporary Upload
    ↓
 Media Domain Record
    ↓
@@ -901,45 +1092,37 @@ Finalized
 Assigned
 ```
 
-Possible failure/cancellation states must be handled without corrupting the owning business transaction.
+Failure and cancellation must not corrupt the authoritative owning business transaction.
 
 ---
 
-# 28. Media Events
+# 32. Media Events and Event Catalog Governance
 
-Media lifecycle events may include:
+Media lifecycle transitions may be operationally important.
 
-```text
-MediaUploaded
-MediaFinalized
-MediaAssigned
-MediaAssignmentRemoved
-MediaDeleted
-```
-
-However, these events must not automatically be interpreted as Feed-generation events.
+However, a Media lifecycle transition must not automatically become a Social Media domain event.
 
 For example:
 
 ```text
-MediaUploaded
+Media Uploaded
 ```
 
-does not mean:
+does not inherently mean:
 
 ```text
-Create Feed Item
+Social Feed Story Created
 ```
 
-The Post business transaction determines whether the media contributes to a published Post.
+The Social Media business transaction determines whether the media participates in a Post or Comment.
+
+Any Media event intended for the generic Event platform must be explicitly established in the canonical Event Catalog rather than being invented by a consumer.
 
 ---
 
-# 29. Post Creation
+# 33. Post Creation Workflow
 
-Post creation is a complete business workflow.
-
-Canonical flow:
+The locked Post Creation workflow is:
 
 ```text
 Post Composer
@@ -952,7 +1135,7 @@ PostCreationService
       ↓
 Validate
       ↓
-Resolve User/Profile/Location
+Resolve Required Context
       ↓
 Create Post
       ↓
@@ -960,27 +1143,29 @@ Finalize Media
       ↓
 Assign Media
       ↓
-Publish Post
+Complete Post Business State
       ↓
-Raise Domain Event
+Raise Social.Post.Created
       ↓
 Transactional Outbox
       ↓
 Commit
 ```
 
-This follows the already locked SocialConnect Post Creation architecture.
+PostService is not the workflow owner.
+
+The Post Creation workflow owns orchestration.
 
 ---
 
-# 30. Post Content
+# 34. Post Content
 
 A Post may support:
 
 * text;
+* one or more supported media items;
 * image;
 * video;
-* multiple media;
 * location;
 * visibility;
 * comments enabled/disabled;
@@ -991,16 +1176,16 @@ The Post domain owns these business properties.
 
 ---
 
-# 31. Post Location
+# 35. Post Location
 
-When post location sharing is enabled, SocialConnect may inherit:
+When location sharing is enabled, Post creation may use:
 
 ```text
 CountryId
 CityId
 ```
 
-from the user's profile/context.
+from the appropriate user/context information.
 
 When location sharing is disabled:
 
@@ -1009,279 +1194,282 @@ CountryId = NULL
 CityId = NULL
 ```
 
-The system must not silently expose private profile location through posts.
+Private profile location must never be exposed implicitly merely because the Post is being created.
+
+The exact location privacy policy is server-owned.
 
 ---
 
-# 32. Post Publication
+# 36. Post Lifecycle
 
-Creation and publication must be conceptually separated even if the V1 implementation completes both within one application workflow.
-
-The business state must make it possible to distinguish:
+The current canonical Event Catalog establishes:
 
 ```text
-Draft / Incomplete
+Social.Post.Created
+Social.Post.Updated
+Social.Post.Deleted
+Social.Post.Shared
+Social.Post.VisibilityChanged
 ```
 
-from:
+These events must retain their canonical semantic meaning.
 
-```text
-Published
-```
+A new event must not be introduced merely to simplify a Feed implementation.
 
-where future product requirements require staged publication.
-
-Only a publishable/published Post becomes eligible for Feed distribution.
+If future requirements require a distinct publication state with a separate business transition, the Event Catalog must be deliberately revised before implementation.
 
 ---
 
-# 33. Post Business Events
+# 37. Post Created and Feed Eligibility
 
-The Post subsystem must define explicit business events.
+`Social.Post.Created` is a business fact.
 
-Core events include:
+It does not mean that every created Post must immediately become a Feed story.
 
-```text
-PostCreated
-PostPublished
-PostUpdated
-PostVisibilityChanged
-PostDeleted
-PostRestored
-```
-
-Where creation and publication are one atomic V1 business operation, the event contract must still clearly define whether:
+The Feed impact policy evaluates:
 
 ```text
-PostCreated
+Post State
++
+Visibility
++
+Audience
++
+Moderation State
++
+Deletion State
++
+Social Graph
++
+Other Feed Policy
 ```
 
-means merely persisted or:
-
-```text
-PostCreated + Published
-```
-
-The final event contract must avoid ambiguous semantics.
-
----
-
-# 34. Recommended V1 Published Post Event
-
-For feed generation, the authoritative feed-producing business fact should be:
-
-```text
-PostPublished
-```
-
-because Feed should consume content that is actually eligible for distribution.
+before distribution.
 
 Conceptually:
 
 ```text
-Create Post
-      ↓
-Validate
-      ↓
-Persist
-      ↓
-Publish
-      ↓
-PostPublished
-      ↓
-Outbox
-      ↓
-Feed Distribution
+Social.Post.Created
+        ↓
+Feed Impact Policy
+        ↓
+Is Post eligible?
+        ├── No → No Feed Distribution
+        └── Yes
+             ↓
+        Candidate Generation
+             ↓
+        Distribution
 ```
 
-This prevents Feed from treating an unpublished/incomplete post as distributable content.
+This preserves the distinction between:
+
+```text
+Post Created
+```
+
+and:
+
+```text
+Feed Eligible
+```
+
+without requiring a separate `PostPublished` event.
 
 ---
 
-# 35. Post Update Events
+# 38. Post Update
 
-A post update does not necessarily mean a new Feed story.
+`Social.Post.Updated` does not automatically mean a new Feed story.
 
-The Feed handler must distinguish:
+Depending on the changed state, it may cause:
 
-```text
-Content Update
-```
+* existing Feed projection refresh;
+* ranking signal update;
+* eligibility reevaluation;
+* no Feed action.
 
-from:
+The Feed consumer must interpret the event according to the approved impact policy.
 
-```text
-New Distribution Event
-```
+---
+
+# 39. Post Visibility Change
+
+`Social.Post.VisibilityChanged` may change Feed eligibility.
 
 For example:
 
 ```text
-PostUpdated
-```
-
-may cause existing Feed projections to refresh their representation.
-
-It should not blindly create another Feed item.
-
----
-
-# 36. Post Deletion
-
-When a Post is deleted:
-
-```text
-PostDeleted
-        ↓
-Outbox
-        ↓
-Feed Handler
-        ↓
-Remove / suppress affected Feed representation
-```
-
-The Feed must not retain an active presentation of deleted content.
-
-The Post remains the authoritative domain source.
-
----
-
-# 37. Post Visibility Changes
-
-A visibility change can affect Feed eligibility.
-
-Example:
-
-```text
 Public
    ↓
-FriendsOnly
+Friends Only
 ```
 
 or:
 
 ```text
-FriendsOnly
+Friends Only
    ↓
 Private
 ```
 
-The resulting event must cause Feed processing to reevaluate the affected distribution.
+may require existing distributions to be reevaluated or suppressed.
 
-Therefore:
-
-```text
-PostVisibilityChanged
-```
-
-is a Feed-relevant event.
+The Feed system must never continue displaying content that the current authoritative visibility policy prohibits.
 
 ---
 
-# 38. Sharing
+# 40. Post Deletion
+
+`Social.Post.Deleted` is Feed-relevant.
+
+Conceptually:
+
+```text
+Post Deleted
+      ↓
+Social.Post.Deleted
+      ↓
+Outbox
+      ↓
+Dispatcher
+      ↓
+Feed Consumer
+      ↓
+Suppress / Remove / Invalidate Distribution
+```
+
+The Feed must not continue presenting deleted Post content as active content.
+
+The exact projection cleanup strategy is a Feed implementation concern.
+
+---
+
+# 41. Post Restoration
+
+Restoration is governed by the authoritative Post/moderation/domain lifecycle.
+
+A separate `PostRestored` event is **not currently part of the locked Social Event Catalog**.
+
+If restoration later becomes an independently observable business transition requiring asynchronous consumers, the Event Catalog must explicitly introduce and document an appropriate event.
+
+Until such a contract exists, implementation must not invent one.
+
+---
+
+# 42. Sharing
 
 SocialConnect distinguishes:
 
 ```text
-Internal Share
-External Share
+ShareType.None
+ShareType.Internal
+ShareType.External
 ```
 
-## Internal Share
+Internal sharing is a SocialConnect business operation.
 
-An internal share creates a new Post referencing the original Post.
+External sharing is an external-distribution operation.
 
-The canonical model is:
+---
+
+# 43. Internal Share
+
+An Internal Share creates a new Post referencing the original Post.
+
+The canonical relationship is:
 
 ```text
 New Post
     └── SharedPostId → Original Post
 ```
 
-It does not duplicate:
+The new Post does not duplicate:
 
-* original content;
-* original media;
-* original Post identity.
+* original Post identity;
+* original content as authoritative content;
+* original media as independent media ownership.
 
-The relationship uses the existing:
+The original Post remains authoritative.
 
-```text
-ShareType
-```
-
-contract.
+The existing Share model governs the relationship.
 
 ---
 
-# 39. Internal Share Event
+# 44. Internal Share Event
 
-Internal sharing is itself a business transaction.
+The established Event Catalog contains:
 
-Therefore it produces a business event.
+```text
+Social.Post.Shared
+```
+
+Therefore Internal Share processing must use the canonical event contract rather than inventing a separate event name such as:
+
+```text
+InternalPostShared
+```
 
 Conceptually:
 
 ```text
-User shares Post
+User Shares Post
        ↓
-Create Share/Post
+Share / Post Business Workflow
        ↓
-SharedPostId
+New Share/Post State
        ↓
-PostPublished / PostShared
+Social.Post.Shared
        ↓
-Outbox
+Transactional Outbox
        ↓
-Feed Distribution
+Dispatcher
+       ↓
+Feed / Notification / Other Consumers
 ```
 
-The exact final event naming must remain consistent with the canonical Event Catalog.
-
-The important semantic distinction is:
-
-> A share is not merely a UI button click. It is a committed social business operation.
+The exact payload must follow the canonical Event Contract.
 
 ---
 
-# 40. Shared Post Feed Representation
+# 45. Shared Post Feed Representation
 
-The Feed must be capable of rendering:
+The Feed must be able to represent:
 
 ```text
 User A shared User B's Post
 ```
 
-without duplicating the original Post content in the database.
+without duplicating the original Post as a second authoritative content object.
 
-The Feed card may therefore contain:
+The Feed presentation may contain:
 
 ```text
 Sharer
 +
-Share context
+Share Context
 +
-Original Post reference
+Original Post Reference
 +
-Original Post presentation
+Original Post Presentation
 ```
 
-The underlying Post remains authoritative.
+The original Post remains authoritative.
 
 ---
 
-# 41. Shared Post Graph
+# 46. Shared Post Graph Protection
 
-Shared Posts may reference other shared Posts.
+A shared Post may reference another shared Post.
 
-The Feed system must protect itself against:
+Feed presentation must therefore protect against:
 
 * cycles;
 * unlimited nesting;
 * recursive rendering;
-* pathological shared graphs.
+* pathological graphs.
 
-The existing FeedTimelineContextBuilder requirement therefore remains:
+The existing Feed architecture requires:
 
 ```text
 Maximum Share Depth
@@ -1289,199 +1477,260 @@ Maximum Share Depth
 Cycle Protection
 ```
 
----
-
-# 42. External Sharing
-
-External sharing is not equivalent to internal Feed distribution.
-
-External sharing may produce:
-
-```text
-ExternalShareCreated
-```
-
-for audit/analytics/business purposes where required.
-
-It does not automatically create an internal Feed item unless the business operation itself creates an internal SocialConnect Post.
+The `FeedTimelineContextBuilder` is responsible for preparing a safe presentation context.
 
 ---
 
-# 43. Feed Generation Principles
+# 47. External Sharing
 
-Feed generation is based on business events.
+External sharing is not the same as internal Feed distribution.
 
-The Feed subsystem must not continuously poll every Post table and attempt to infer what happened.
+An external share may be recorded for:
 
-Instead:
+* audit;
+* analytics;
+* business metrics;
+* other explicitly required purposes.
+
+It must not automatically create an internal Feed story.
+
+If the user creates an internal SocialConnect Post as part of a sharing workflow, that internal Post follows the normal Post business/event/Feed lifecycle.
+
+---
+
+# 48. Feed Generation Principles
+
+Feed generation is event-driven.
+
+The Feed subsystem must not rely on continuously scanning all Post records and attempting to infer historical business activity as its primary processing mechanism.
+
+The canonical model is:
 
 ```text
 Business Event
       ↓
-Feed Impact
+Feed Impact Policy
+      ↓
+Feed Action
 ```
 
-is the canonical model.
-
-This makes social consequences traceable.
+This makes downstream social consequences traceable.
 
 ---
 
-# 44. Feed Event Categories
+# 49. Feed Impact Categories
 
-Feed-related events fall into four conceptual categories.
+Feed impacts are divided conceptually into four categories.
 
-## Category A — New Content
+## Category A — New Candidate Content
 
-Events that introduce new candidate content:
-
-```text
-PostPublished
-InternalPostShared
-```
-
-## Category B — Content State
-
-Events that alter eligibility or representation:
+Business events that may introduce new Feed candidates:
 
 ```text
-PostUpdated
-PostVisibilityChanged
-PostDeleted
-PostRestored
+Social.Post.Created
+Social.Post.Shared
 ```
+
+Eligibility remains mandatory.
+
+Neither event means unconditional distribution.
+
+---
+
+## Category B — Existing Content State
+
+Events that may alter existing Feed representation or eligibility:
+
+```text
+Social.Post.Updated
+Social.Post.VisibilityChanged
+Social.Post.Deleted
+```
+
+---
 
 ## Category C — Engagement Signals
 
-Events that alter ranking/signals:
+Events that may influence existing Feed candidates or ranking:
 
 ```text
-ReactionAdded
-ReactionChanged
-ReactionRemoved
-
-CommentCreated
-CommentReplied
-CommentDeleted
-
-ShareCreated
-ShareDeleted
+Social.Reaction.Added
+Social.Reaction.Changed
+Social.Reaction.Removed
 ```
 
-These generally do not create a new Feed story.
+and:
 
-They update the information used by Feed ranking or re-ranking.
+```text
+Social.Comment.Created
+Social.Comment.Updated
+Social.Comment.Deleted
+```
+
+where applicable.
+
+These generally do not create another Feed story.
+
+---
 
 ## Category D — Social Graph Changes
 
-Events that alter who may receive or discover content:
+Social graph business events may influence Feed eligibility or ranking.
+
+Examples include:
 
 ```text
-FriendshipAccepted
-FriendshipRemoved
-FollowCreated
-FollowRemoved
-BlockCreated
-BlockRemoved
+Friendship Accepted
+Friendship Removed
+Follow Created
+Follow Removed
+Block Created
+Block Removed
 ```
 
-These events may require Feed eligibility recalculation.
+These events are governed by the Social Graph/Event Catalog contracts.
 
 ---
 
-# 45. Feed Must Distinguish Story Creation from Ranking Signal
+# 50. Feed Impact Matrix
+
+The following is the canonical **conceptual** impact matrix.
+
+| Business Event                  | New Feed Candidate | Existing Feed Update | Ranking / Engagement Signal | Eligibility Re-evaluation |
+| ------------------------------- | -----------------: | -------------------: | --------------------------: | ------------------------: |
+| `Social.Post.Created`           |   Policy-dependent |             Possible |                         Yes |                       Yes |
+| `Social.Post.Updated`           |                 No |                  Yes |                    Possible |                  Possible |
+| `Social.Post.VisibilityChanged` |                 No |                  Yes |                    Possible |                       Yes |
+| `Social.Post.Deleted`           |                 No |       Yes / Suppress |                          No |                       Yes |
+| `Social.Post.Shared`            |   Policy-dependent |             Possible |                         Yes |                       Yes |
+| `Social.Reaction.Added`         |                 No |             Possible |                         Yes |          Policy-dependent |
+| `Social.Reaction.Changed`       |                 No |             Possible |                         Yes |          Policy-dependent |
+| `Social.Reaction.Removed`       |                 No |             Possible |                         Yes |          Policy-dependent |
+| `Social.Comment.Created`        |                 No |             Possible |                         Yes |          Policy-dependent |
+| `Social.Comment.Updated`        |                 No |             Possible |                    Possible |          Policy-dependent |
+| `Social.Comment.Deleted`        |                 No |             Possible |                    Possible |          Policy-dependent |
+| Social Graph relationship event |                 No |             Possible |                         Yes |                       Yes |
+| Block relationship event        |                 No |       Yes / Suppress |                          No |                       Yes |
+
+**Important:** This matrix describes architectural impact categories, not a promise that every event will execute every possible effect.
+
+The final implementation policy for each event must explicitly determine the actual effects.
+
+---
+
+# 51. Feed Story Creation vs Signal Update
 
 This distinction is mandatory.
 
-For example:
+Example:
 
 ```text
-PostPublished
+Social.Post.Created
+        ↓
+Eligible?
+        ↓
+Create Candidate
 ```
 
-may create a new Feed candidate.
-
-But:
+while:
 
 ```text
-ReactionAdded
-```
-
-does not create another Post in the Feed.
-
-Instead:
-
-```text
-ReactionAdded
+Social.Reaction.Added
         ↓
 Engagement Signal
         ↓
-Existing Feed Candidate Updated
+Update Existing Candidate / Ranking Data
 ```
 
-Likewise:
+Similarly:
 
 ```text
-CommentCreated
+Social.Comment.Created
+        ↓
+Engagement / Conversation Signal
 ```
 
-may affect ranking or action-bumping without creating a duplicate Feed story.
+does not mean:
 
-Facebook publicly describes engagement and conversation as signals that can influence Feed ranking, while its Feed system separately builds candidate inventory and ranks that inventory.
+```text
+Create Another Feed Story
+```
+
+unless a future Feed policy explicitly defines such behavior.
 
 ---
 
-# 46. Feed Candidate Inventory
+# 52. Feed Candidate Inventory
 
 Feed processing must conceptually maintain or calculate an eligible candidate inventory.
 
 A candidate must satisfy relevant conditions such as:
 
 * content exists;
-* content is published;
+* content is in a distributable state;
 * content is not deleted;
 * content is visible to the viewer;
-* viewer is not blocked;
-* author/content relationship is eligible;
-* content policy permits distribution;
-* target audience permits distribution.
+* viewer is permitted to see it;
+* blocking rules do not prohibit distribution;
+* relationship rules permit distribution;
+* moderation policy permits distribution;
+* audience rules permit distribution;
+* other Feed eligibility rules are satisfied.
 
-The candidate inventory is then available to ranking/distribution logic.
+The implementation may use stored candidate records, projections, queries, or a hybrid approach.
 
----
-
-# 47. Feed Eligibility
-
-Feed eligibility must be determined independently from Feed rendering.
-
-The architecture is:
+The architectural requirement is the separation of:
 
 ```text
-Feed Candidate
-      ↓
-Eligibility
-      ↓
-Ranking / Ordering
-      ↓
-Feed Timeline Context
-      ↓
-Feed Card
-      ↓
-View
+Candidate Generation
 ```
 
-The Feed ViewComponent must not decide eligibility.
+from:
+
+```text
+Eligibility
+```
+
+and:
+
+```text
+Ranking
+```
 
 ---
 
-# 48. Feed Ranking
+# 53. Feed Eligibility
 
-Feed ranking is a separate responsibility from Feed candidate generation.
+Feed eligibility is a business/application concern.
 
-Potential signals include:
+The Feed presentation layer must not decide whether content is eligible.
+
+Canonical flow:
+
+```text
+Candidate
+   ↓
+Eligibility
+   ↓
+Ranking / Ordering
+   ↓
+Timeline Context
+   ↓
+Feed Card
+```
+
+The server remains authoritative.
+
+---
+
+# 54. Feed Ranking
+
+Feed ranking is separate from candidate generation.
+
+The ranking boundary may use signals including:
 
 * recency;
-* relationship strength;
+* social relationship;
 * author relationship;
 * previous interaction;
 * reactions;
@@ -1490,20 +1739,57 @@ Potential signals include:
 * content type;
 * location relevance;
 * user preferences;
-* visibility;
 * negative feedback;
 * social graph changes;
+* content diversity;
 * other approved ranking signals.
 
-Facebook has publicly described Feed as using many signals and prediction/ranking stages rather than a single simplistic chronological list.
+The exact ranking algorithm is not fixed by this requirements document.
 
-SocialConnect therefore reserves a dedicated Feed ranking boundary.
+The architecture must instead preserve a dedicated ranking boundary so that ranking can evolve independently from:
+
+* Post creation;
+* Reaction persistence;
+* Comment persistence;
+* Feed rendering.
 
 ---
 
-# 49. Feed Timeline Architecture
+# 55. Feed Is Not Defined as Chronological Timeline
 
-The locked SocialConnect Feed architecture remains:
+A chronological Feed mode may exist.
+
+It must not become the architectural definition of Feed.
+
+The Feed architecture remains capable of:
+
+```text
+Candidate Generation
+        ↓
+Eligibility
+        ↓
+Ranking
+        ↓
+Ordering
+        ↓
+Presentation
+```
+
+This allows future Feed surfaces such as:
+
+* personalized Home;
+* Latest;
+* Friends;
+* Following;
+* nearby;
+* Shop/social surfaces;
+* recommendation surfaces.
+
+---
+
+# 56. Feed Timeline Architecture
+
+The locked Feed architecture remains:
 
 ```text
 FeedTimelineService
@@ -1515,98 +1801,88 @@ FeedReactionResolver
 FeedCardFactory
 ```
 
-Responsibilities:
+## FeedTimelineService
 
-### FeedTimelineService
+Owns Feed orchestration.
 
-Orchestrates the Feed workflow.
+It coordinates the read workflow but does not become the owner of Post, Reaction, Comment, or Media business operations.
 
-### FeedTimelineContextBuilder
+## FeedTimelineContextBuilder
 
-Builds the required context and loads the relevant social graph/content data.
+Builds the context required for Feed rendering.
 
-### FeedReactionResolver
+It may load:
 
-Resolves reaction presentation from the existing reaction data/context.
+* Posts;
+* authors;
+* profiles;
+* media;
+* share graph;
+* reaction presentation state;
+* comment summaries;
+* social graph context;
+* other approved presentation data.
 
-It does not duplicate Reaction business logic.
+It must protect against:
 
-### FeedCardFactory
+* N+1 loading;
+* duplicate target resolution;
+* recursive share graphs.
+
+## FeedReactionResolver
+
+Resolves reaction presentation from existing Reaction information.
+
+It does not implement Reaction business rules.
+
+## FeedCardFactory
 
 Maps prepared context into Feed ViewModels.
 
-It should remain pure mapping.
+It remains presentation mapping logic.
 
 ---
 
-# 50. Feed Reaction Resolver Boundary
+# 57. Feed Reaction Resolver Boundaries
 
-Two resolver concepts remain distinct.
+Two resolver responsibilities remain distinct.
 
 ```text
 IReactionTargetResolver
 ```
 
-is responsible for loading reactable domain targets for the Reaction subsystem.
+resolves reactable domain targets for the Reaction subsystem.
 
 ```text
 IFeedReactionTargetResolver
 ```
 
-maps:
+maps Feed entity context into the canonical Reaction target model.
 
-```text
-EntityOwnerType
-        ↓
-ReactionTargetType
-```
-
-for Feed presentation.
-
-These must not be collapsed into one service.
+They must not be collapsed into one service merely because both deal with reaction targets.
 
 ---
 
-# 51. Feed Card Factory
+# 58. FeedCardFactory Restrictions
 
 FeedCardFactory must not:
 
 * query repositories;
 * perform authorization;
-* execute reaction business logic;
-* generate notifications;
-* create events;
-* calculate Feed eligibility;
-* rank candidates.
+* resolve business ownership;
+* execute Reaction business logic;
+* create Notifications;
+* create Alerts;
+* create domain events;
+* determine Feed eligibility;
+* rank candidates;
+* perform Feed distribution.
 
-It receives prepared context and maps it into presentation models.
-
----
-
-# 52. Feed UI
-
-The Feed UI is a presentation layer.
-
-It renders:
-
-* author;
-* timestamp;
-* content;
-* media;
-* location;
-* sharing context;
-* reaction summary;
-* comment summary;
-* share information;
-* interaction controls.
-
-It does not own the underlying business operations.
+It receives prepared context and maps that context to presentation ViewModels.
 
 ---
 
-# 53. Feed and Media
-
-Feed media is a representation of the underlying Post/Comment/Media domain.
+# 59. Feed and Media
 
 Feed does not upload media.
 
@@ -1614,11 +1890,29 @@ Feed does not finalize media.
 
 Feed does not assign media.
 
-Feed consumes media that has already been processed through the canonical Media subsystem.
+Feed consumes media already processed by the canonical Media subsystem.
+
+Therefore:
+
+```text
+Media
+   ↓
+Post / Comment
+   ↓
+Feed Presentation
+```
+
+not:
+
+```text
+Feed
+   ↓
+Media Upload
+```
 
 ---
 
-# 54. Feed and Comments
+# 60. Feed and Comments
 
 Feed may display:
 
@@ -1628,13 +1922,13 @@ Feed may display:
 * replies;
 * comment interaction.
 
-But CommentManager remains the owner of comment interaction.
+The reusable CommentManager remains the owner of comment interaction.
 
-Feed embeds/configures the reusable CommentManager rather than implementing another comment system.
+Feed configures/embeds the CommentManager rather than implementing another comment system.
 
 ---
 
-# 55. Feed and Reactions
+# 61. Feed and Reactions
 
 Feed may display:
 
@@ -1647,15 +1941,9 @@ Sad
 Angry
 ```
 
-but Feed does not implement these operations.
+but Feed does not implement Reaction persistence or transition logic.
 
-The action is transported to:
-
-```text
-Reaction subsystem
-```
-
-using:
+The action is sent through the canonical Reaction gateway using:
 
 ```text
 TargetType + TargetId
@@ -1663,236 +1951,369 @@ TargetType + TargetId
 
 ---
 
-# 56. Feed and Sharing
+# 62. Feed and Sharing
 
-Feed may expose the Share operation.
+Feed may expose the Share interaction.
 
-The actual business operation belongs to:
+The actual business operation belongs to the established Share/Post workflow.
 
-```text
-Sharing / Post Creation
-```
+Feed initiates the operation against the underlying Post.
 
-not Feed.
-
-Feed simply initiates the operation against the underlying Post.
+It does not create Share state itself.
 
 ---
 
-# 57. Social Graph and Feed
+# 63. Social Graph Integration
 
-The Feed must be able to consume social graph relationships such as:
+Feed may consume Social Graph relationships including:
 
 * friends;
 * followers;
-* followed users;
-* followed shops/pages where applicable;
+* following;
+* followed shops/pages where supported;
 * blocks;
-* relationship changes.
+* relationship changes;
+* other approved relationship signals.
 
-These relationships influence candidate eligibility and/or ranking.
+The Social Graph remains authoritative for those relationships.
 
-They do not become Feed-owned data.
+Feed consumes relationship information.
 
----
-
-# 58. Business Event → Feed Impact Matrix
-
-The following matrix is the canonical conceptual contract.
-
-| Business Event          | New Feed Story | Existing Feed Update | Ranking Signal | Eligibility Re-evaluation |
-| ----------------------- | -------------: | -------------------: | -------------: | ------------------------: |
-| `PostPublished`         |            Yes |             Possible |            Yes |                       Yes |
-| `PostUpdated`           |             No |                  Yes |       Possible |                  Possible |
-| `PostVisibilityChanged` |             No |                  Yes |       Possible |                       Yes |
-| `PostDeleted`           |             No |           Yes/Remove |             No |                       Yes |
-| `PostRestored`          |             No |                  Yes |       Possible |                       Yes |
-| `InternalPostShared`    |            Yes |             Possible |            Yes |                       Yes |
-| `ReactionAdded`         |             No |             Possible |            Yes |       No/Policy-dependent |
-| `ReactionChanged`       |             No |             Possible |            Yes |       No/Policy-dependent |
-| `ReactionRemoved`       |             No |             Possible |            Yes |       No/Policy-dependent |
-| `CommentCreated`        |             No |             Possible |            Yes |       No/Policy-dependent |
-| `CommentReplied`        |             No |             Possible |            Yes |       No/Policy-dependent |
-| `CommentDeleted`        |             No |             Possible |       Possible |       No/Policy-dependent |
-| `FriendshipAccepted`    |             No |             Possible |            Yes |                       Yes |
-| `FriendshipRemoved`     |             No |             Possible |            Yes |                       Yes |
-| `FollowCreated`         |             No |             Possible |            Yes |                       Yes |
-| `FollowRemoved`         |             No |             Possible |            Yes |                       Yes |
-| `BlockCreated`          |             No |                  Yes |             No |                       Yes |
-| `BlockRemoved`          |             No |                  Yes |             No |                       Yes |
-| `MediaUploaded`         |             No |                   No |             No |                        No |
-| `MediaFinalized`        |             No |                   No |             No |                        No |
-| `MediaAssigned`         |             No |             Possible |             No |                        No |
-
-The exact event names remain governed by the canonical Event Catalog.
-
-The important architectural rule is the distinction between:
-
-```text
-New Story
-```
-
-and:
-
-```text
-Signal / Projection Update
-```
+It does not become the owner of Social Graph state.
 
 ---
 
-# 59. Notification Integration
+# 64. Social Graph Events and Feed
 
-Social business events may also feed the Notification subsystem.
+When a Social Graph operation changes the set of users who may see content, Feed eligibility may require recalculation.
+
+Conceptually:
+
+```text
+Social Graph Business Operation
+        ↓
+Social Graph Event
+        ↓
+Feed Impact
+        ↓
+Eligibility Re-evaluation
+```
+
+Examples include:
+
+```text
+Follow Created
+Follow Removed
+Friendship Accepted
+Friendship Removed
+Block Created
+Block Removed
+```
+
+The exact events remain governed by the Social Graph/Event Catalog.
+
+---
+
+# 65. Notification Integration
+
+Social Media events may be consumed by the Notification subsystem.
+
+Examples include:
+
+```text
+Social.Post.Created
+Social.Post.Shared
+Social.Reaction.Added
+Social.Reaction.Changed
+Social.Comment.Created
+```
+
+where the Notification Policy defines a notification-worthy condition.
+
+The Social Media service does not directly own notification persistence or delivery.
+
+Canonical flow:
+
+```text
+Social Event
+      ↓
+Dispatcher
+      ↓
+Notification Consumer
+      ↓
+Recipient Resolution
+      ↓
+Notification Orchestration
+      ↓
+Notification Persistence
+      ↓
+Delivery Planning
+      ↓
+Channel Adapter
+```
+
+Recipient resolution remains part of the canonical Notification architecture.
+
+---
+
+# 66. Alerting Integration
+
+Alerting is a separate operational platform.
+
+A Social Media business event may provide evidence to an Alert Source/Policy.
 
 For example:
 
 ```text
-CommentCreated
-        ↓
-Recipient Resolution
-        ↓
-Notification
-```
-
-or:
-
-```text
-ReactionAdded
-        ↓
-Recipient Resolution
-        ↓
-Notification
-```
-
-Feed and Notification are independent consumers.
-
-Therefore:
-
-```text
-PostPublished
-       ├── Feed Handler
-       ├── Notification Handler
-       ├── Alert Handler
-       └── Other Consumers
-```
-
-No Feed service should call NotificationService directly as part of its internal logic.
-
----
-
-# 60. Alert Integration
-
-Alerting is likewise a separate consumer.
-
-A Social Media operation may produce:
-
-```text
-Domain Event
-```
-
-which is then evaluated by:
-
-```text
+Social Event
+      ↓
+Operational Evidence
+      ↓
 Alert Source / Policy
+      ↓
+Alert
 ```
 
-The generic Alerting platform must not contain a giant switch such as:
+The generic Alerting platform must not contain a giant Social Media switch such as:
 
 ```text
 if PostCreated...
 if CommentCreated...
-if ReactionCreated...
+if ReactionAdded...
 ```
 
-Instead, individual operational conditions plug into the established Alert source/policy boundary.
+Instead:
+
+```text
+Generic Alert Platform
+        +
+Domain-specific Alert Sources / Policies
+```
+
+is the canonical architecture.
+
+Social Media contributes operational conditions through the established Alert source/policy boundary.
 
 ---
 
-# 61. Event / Notification / Alert Separation
+# 67. Event / Notification / Alert Separation
 
-The architecture must remain:
+These concepts remain distinct:
 
 ```text
-Business Operation
-        ↓
-Domain Event
-        ↓
-Transactional Outbox
-        ↓
+Business Event
+    =
+Committed Business Fact
+```
+
+```text
+Notification
+    =
+User-facing downstream communication
+```
+
+```text
+Alert
+    =
+Operational condition requiring attention
+```
+
+```text
+Feed
+    =
+Content distribution / presentation projection
+```
+
+Therefore:
+
+```text
+Business Event
+       ↓
 Dispatcher
-        ↓
-Multiple Consumers
-        ├── Feed
-        ├── Notification
-        ├── Alert
-        ├── Audit
-        └── Future Consumers
+       │
+       ├── Feed Consumer
+       ├── Notification Consumer
+       ├── Alert Consumer
+       ├── Audit Consumer
+       └── Other Consumer
 ```
 
 No consumer becomes the owner of the event.
 
 ---
 
-# 62. Domain Event vs Technical Event
+# 68. Domain Event vs Technical Event
 
-A Domain Event represents a business fact.
+A domain event represents a meaningful business fact.
 
 Examples:
 
 ```text
-PostPublished
-ReactionAdded
-CommentCreated
-InternalPostShared
-PostDeleted
+Social.Post.Created
+Social.Post.Updated
+Social.Post.Deleted
+Social.Post.Shared
+Social.Post.VisibilityChanged
+
+Social.Reaction.Added
+Social.Reaction.Changed
+Social.Reaction.Removed
+
+Social.Comment.Created
+Social.Comment.Updated
+Social.Comment.Deleted
 ```
 
-Technical operations such as:
+Technical actions are not automatically domain events.
+
+Examples:
 
 ```text
-MediaUploadStarted
 HTTP request received
-Feed card rendered
 JavaScript click occurred
+Feed card rendered
+Database query executed
+Media upload progress changed
 ```
 
-are not automatically domain events.
-
-This distinction prevents event infrastructure from becoming an implementation-event bus.
+These do not automatically become domain events.
 
 ---
 
-# 63. Event Payload Requirements
+# 69. Canonical Social Event Catalog Alignment
 
-Each social event must contain enough information for downstream consumers without forcing consumers to reconstruct the entire operation from UI state.
+The Social Media subsystem must align with the established Event Catalog.
 
-A typical event should identify:
+The currently locked Social event surface is:
+
+## Post
+
+```text
+Social.Post.Created
+Social.Post.Updated
+Social.Post.Deleted
+Social.Post.Shared
+Social.Post.VisibilityChanged
+```
+
+## Reaction
+
+```text
+Social.Reaction.Added
+Social.Reaction.Changed
+Social.Reaction.Removed
+```
+
+## Comment
+
+```text
+Social.Comment.Created
+Social.Comment.Updated
+Social.Comment.Deleted
+Social.Comment.Moderated
+```
+
+The Event Catalog is authoritative.
+
+This document does not silently create competing event names.
+
+If a future business requirement requires a new event, that event must be explicitly added to the canonical Event Catalog with:
+
+* semantic definition;
+* aggregate;
+* trigger;
+* payload;
+* version;
+* transaction requirements;
+* consumers;
+* compatibility rules.
+
+---
+
+# 70. Comment Reply Event Semantics
+
+A reply is a Comment business operation.
+
+The current Event Catalog does not define a separate:
+
+```text
+Social.Comment.Replied
+```
+
+event.
+
+Therefore a reply is represented through:
+
+```text
+Social.Comment.Created
+```
+
+with the relevant parent-comment information in the event contract.
+
+Conceptually:
+
+```text
+Create Reply
+      ↓
+Comment.Created
+      ↓
+ParentCommentId / Target Context
+      ↓
+Notification / Feed / Other Impact
+```
+
+If future requirements justify a separate reply event, the Event Catalog must be deliberately revised.
+
+---
+
+# 71. Event Payload Requirements
+
+Each Social event must provide enough information for its approved consumers to process the business fact without depending on UI state.
+
+A canonical event contract may include:
 
 * EventId;
+* event name/type;
 * aggregate/entity identifier;
 * actor/user identifier where applicable;
-* target identifier/type where applicable;
+* TargetType where applicable;
+* TargetId where applicable;
 * operation timestamp;
-* relevant state transition;
+* relevant business state transition;
 * correlation information;
 * event version;
-* event metadata required by the canonical Event infrastructure.
+* metadata required by the Event infrastructure.
 
-Events must remain stable contracts.
+The exact payload is defined by the Event Catalog and event specification.
+
+Events must remain vendor-neutral.
+
+Events must not contain unnecessary external-provider fields such as:
+
+```text
+TwilioMessageId
+SendGridTemplateId
+FirebaseVendorPayload
+PaymentProviderInternalObject
+```
+
+unless such information is itself a genuine business fact explicitly required by the canonical contract.
 
 ---
 
-# 64. Event Idempotency
+# 72. Event Idempotency
 
-Every Feed consumer must be idempotent.
+Every asynchronous Social consumer must be idempotent.
 
-The same event may be delivered more than once because of:
+Duplicate event delivery may occur because of:
 
-* retries;
-* dispatcher restart;
-* worker failure;
-* network/database interruption;
-* lease expiration.
+* retry;
+* worker restart;
+* process crash;
+* lease expiration;
+* database interruption;
+* dispatcher failure;
+* transient infrastructure failure.
 
 Therefore:
 
@@ -1901,170 +2322,294 @@ Same EventId
 +
 Same Consumer
 =
-No duplicate business effect
+No Duplicate Business Effect
 ```
 
-This applies especially to Feed distribution.
+This applies particularly to Feed distribution.
 
 ---
 
-# 65. Feed Distribution Idempotency
+# 73. Feed Distribution Idempotency
 
-A Post must not generate duplicate Feed representations merely because:
+Repeated processing of:
 
 ```text
-PostPublished
+Social.Post.Created
 ```
 
-is delivered twice.
+must not create duplicate logical Feed distributions.
 
 The Feed processing layer must have a deterministic idempotency strategy.
 
 Conceptually:
 
 ```text
-EventId
+Event
 +
 Consumer
 +
-TargetUser
+Viewer
 +
-FeedStory
+Logical Feed Distribution
 ```
 
-must resolve to one logical distribution.
+must resolve to one logical result.
+
+The exact persistence/key strategy belongs to Feed implementation.
 
 ---
 
-# 66. Background Worker Requirements
+# 74. Feed Rebuild Capability
 
-Feed processing may be performed by background workers.
+Because Feed is derived from authoritative domain state and events, the architecture should remain capable of rebuilding Feed projections where required.
 
-Workers must support:
+Feed must not become the only place from which social content can be reconstructed.
 
-* durable event consumption;
-* retries;
-* lease/claim behavior;
-* idempotency;
-* failure recovery;
-* observability;
-* logging;
+Rebuild capability is important for:
+
+* projection recovery;
+* data recovery;
+* new Feed surfaces;
+* ranking changes;
+* schema/projection evolution;
+* future recommendation systems.
+
+---
+
+# 75. Background Worker Requirements
+
+Feed processing may use background workers.
+
+Workers must participate in the common application-wide Worker Health architecture.
+
+A Feed worker must support, through the established Worker Health contract:
+
+* worker identity;
+* heartbeat;
+* progress evidence;
+* current operation;
+* last successful cycle;
+* failure reporting;
+* operational logging;
 * concurrency safety;
-* controlled throughput.
+* controlled throughput;
+* recovery behavior.
 
-Feed workers must never bypass the canonical event/outbox infrastructure.
+Feed must not create an isolated Feed-only health system.
+
+The same Worker Health platform must later support workers from:
+
+* Event;
+* Notification;
+* Feed;
+* Media;
+* Marketplace;
+* Orders;
+* Payments;
+* Administration;
+* other future modules.
 
 ---
 
-# 67. Feed Consistency Model
+# 76. Worker Health vs Alerting
 
-SocialConnect should distinguish:
+Worker Health and Alerting remain separate.
 
-### Strong consistency
+Worker Health produces operational evidence.
 
-Required for:
+Alerting evaluates operational conditions.
 
-* Post persistence;
+Therefore:
+
+```text
+Feed Worker
+    ↓
+Worker Health
+    ↓
+Operational Evidence
+    ↓
+Alert Source / Policy
+    ↓
+Alert
+```
+
+Alerting does not own:
+
+* worker execution;
+* worker scheduling;
+* worker recovery;
+* worker restart;
+* worker processing logic.
+
+Worker self-recovery remains the responsibility of the appropriate worker/application infrastructure.
+
+---
+
+# 77. Retry Ownership
+
+Social Media must not introduce one universal retry service.
+
+Retry ownership remains separated by failure domain:
+
+```text
+Business Workflow Retry
+Event / Outbox Retry
+Notification Delivery Retry
+External Sink Retry
+Worker Recovery
+Alert Recovery
+```
+
+For example:
+
+```text
+Feed Handler Failure
+        ↓
+Event Processing Retry
+```
+
+is not the same mechanism as:
+
+```text
+Email Provider Failure
+        ↓
+Notification Delivery Retry
+```
+
+and neither is the same as:
+
+```text
+Feed Worker Crash
+        ↓
+Worker Recovery
+```
+
+This separation is mandatory.
+
+---
+
+# 78. External Dependency Boundary
+
+All external dependencies used by Social Media or its downstream platforms must be isolated behind internal contracts.
+
+Canonical structure:
+
+```text
+Business / Application
+        ↓
+Internal Contract
+        ↓
+Infrastructure Adapter
+        ↓
+External Provider
+```
+
+External vendor SDKs and provider-specific types must not leak into domain/application logic.
+
+This applies to:
+
+* object/file storage;
+* email;
+* SMS;
+* push;
+* maps/geolocation;
+* authentication providers;
+* payment providers;
+* analytics;
+* search;
+* AI;
+* external operational sinks;
+* other external APIs.
+
+Changing a provider should ideally require changing or configuring an adapter rather than rewriting business logic.
+
+---
+
+# 79. Social Media and External Providers
+
+Social domain events must remain vendor-neutral.
+
+For example:
+
+```text
+Reaction.Added
+```
+
+must describe the business fact:
+
+```text
+User X added Reaction Y to Target Z
+```
+
+not:
+
+```text
+FirebaseReactionPayload...
+```
+
+Likewise, Feed business logic must not depend directly on an external vendor SDK.
+
+External provider integration belongs behind the appropriate internal contract and infrastructure adapter.
+
+---
+
+# 80. Feed Consistency Model
+
+SocialConnect distinguishes authoritative transactional consistency from downstream eventual consistency.
+
+## Strong consistency is required for
+
+* Post state;
 * Reaction state;
-* Comment persistence;
-* Media assignment;
+* Comment state;
 * Share transaction;
-* domain event persistence.
+* Media assignment;
+* required domain event persistence;
+* required Outbox persistence.
 
-### Eventual consistency
-
-Allowed for:
+## Eventual consistency is acceptable for
 
 * Feed propagation;
+* Feed projection updates;
 * Feed ranking updates;
-* notification delivery;
-* alert evaluation;
-* derived counters/projections where explicitly designed.
+* Notification delivery;
+* Alert evaluation;
+* derived projections;
+* other explicitly asynchronous downstream effects.
 
-This is fundamental to scalable social architecture.
+This distinction is fundamental to scalable social processing.
 
 ---
 
-# 68. User Experience Requirement
+# 81. User Experience Requirement
 
-The user should see the newly created Post as successfully created once the authoritative transaction succeeds.
+A Post is considered successfully created when the authoritative Post transaction succeeds.
 
-Feed propagation may complete shortly afterward.
-
-The system must not falsely report:
+The user must not receive:
 
 ```text
-Post creation failed
+Post Creation Failed
 ```
 
-merely because background Feed distribution is still processing.
+merely because Feed propagation is still processing.
 
-Likewise, Feed workers must not silently create authoritative Posts.
-
----
-
-# 69. Facebook-Class Feed Principles
-
-SocialConnect's Feed should follow the same high-level product principles publicly described by Facebook:
-
-* personalized content;
-* relationship-aware content;
-* recency;
-* engagement signals;
-* meaningful interaction;
-* candidate selection;
-* ranking;
-* feedback;
-* content diversity;
-* user controls;
-* continuous refinement.
-
-Facebook has explicitly described Feed as combining candidate inventory, signals, predictions and ranking, with engagement and relationship signals among the inputs.
-
-SocialConnect should therefore avoid defining Feed as simply:
-
-```sql
-SELECT TOP 50 Posts
-ORDER BY CreatedAt DESC
-```
-
-That would not satisfy the intended social-media architecture.
-
----
-
-# 70. Feed Does Not Mean Chronological Timeline
-
-A chronological view may exist as one Feed mode.
-
-It must not become the definition of the entire Feed architecture.
-
-The Feed engine must remain capable of:
+The system may therefore legitimately have:
 
 ```text
-Candidate Generation
-→ Eligibility
-→ Ranking
-→ Ordering
-→ Presentation
+Post Created
++
+Feed Processing Pending
 ```
 
-This allows future support for:
+for a short period.
 
-* Latest;
-* personalized Home;
-* friends;
-* following;
-* nearby;
-* shop/social feeds;
-* recommendation surfaces.
-
-Facebook itself distinguishes a personalized Home experience from a more recent/connection-oriented Feeds experience.
+Feed workers must not create authoritative Posts merely because a Feed representation is missing.
 
 ---
 
-# 71. Social Media Content Lifecycle
+# 82. Content Lifecycle
 
-The complete social content lifecycle is:
+The canonical social lifecycle is:
 
 ```text
 Compose
@@ -2081,19 +2626,21 @@ Finalize Media
    ↓
 Assign Media
    ↓
-Publish
+Complete Business State
    ↓
 Domain Event
    ↓
-Outbox
+Transactional Outbox
    ↓
-Background Distribution
+Background Processing
    ↓
 Feed Candidate
    ↓
 Eligibility
    ↓
 Ranking
+   ↓
+Feed Distribution
    ↓
 Feed Presentation
    ↓
@@ -2102,21 +2649,21 @@ User Interaction
    ├── Comment
    └── Share
          ↓
-     New Domain Event
+     New Business Event
          ↓
      Further Impact
 ```
 
-This creates the intended event-driven social loop.
+This forms the SocialConnect event-driven social loop.
 
 ---
 
-# 72. End-to-End Post Scenario
+# 83. End-to-End Post Scenario
 
-A complete Post scenario must be documented and tested as:
+The canonical Post vertical slice is:
 
 ```text
-User submits Post
+User Submits Post
         ↓
 Post Composer
         ↓
@@ -2126,7 +2673,7 @@ PostCreationContext
         ↓
 PostCreationService
         ↓
-Validate
+Validation
         ↓
 Create Post
         ↓
@@ -2134,21 +2681,25 @@ Finalize Media
         ↓
 Assign Media
         ↓
-Publish
+Complete Authoritative Post State
         ↓
-PostPublished
+Social.Post.Created
         ↓
 Transactional Outbox
         ↓
 Commit
         ↓
-Background Dispatcher
+Dispatcher
         ↓
-Feed Handler
+Post Created Consumer / Feed Impact
         ↓
-Resolve Eligible Audience
+Resolve Audience / Candidates
         ↓
-Create/Update Feed Distribution
+Evaluate Eligibility
+        ↓
+Feed Distribution
+        ↓
+Feed Projection
         ↓
 Feed Available
 ```
@@ -2156,22 +2707,23 @@ Feed Available
 Separately:
 
 ```text
-PostPublished
-        ├── Notification processing
-        ├── Alert processing
-        └── Other consumers
+Social.Post.Created
+        ├── Notification Policy
+        ├── Alert Source / Policy
+        ├── Audit
+        └── Other Approved Consumers
 ```
 
 ---
 
-# 73. End-to-End Reaction Scenario
+# 84. End-to-End Reaction Scenario
 
 ```text
-User clicks Love
+User Clicks Love
         ↓
-Feed/Post/Comment UI
+Feed / Post / Comment UI
         ↓
-Reaction endpoint
+POST /api/reaction/toggle
         ↓
 Reaction Service
         ↓
@@ -2193,171 +2745,194 @@ Transactional Outbox
 Commit
         ↓
 Dispatcher
-        ├── Feed Signal Handler
-        ├── Notification Handler
-        ├── Alert Handler
+        ├── Feed Signal Consumer
+        ├── Notification Consumer
+        ├── Alert Consumer
+        ├── Audit Consumer
         └── Other Consumers
 ```
 
 ---
 
-# 74. End-to-End Comment Scenario
+# 85. End-to-End Comment Scenario
 
 ```text
-User submits Comment
+User Submits Comment
         ↓
 CommentManager
         ↓
 Comment API
         ↓
-Comment Service
+Comment Application Service
         ↓
-Validate target
+Validate Target
         ↓
-Validate parent/depth
+Validate Parent / Depth
         ↓
-Validate content
+Validate Content
         ↓
-Validate media count ≤ 1
+Validate Media Count ≤ 1
         ↓
 Create Comment
         ↓
-Assign finalized media
+Assign Finalized Media
         ↓
 Persist
         ↓
-CommentCreated / CommentReplied
+Social.Comment.Created
         ↓
 Transactional Outbox
         ↓
 Commit
         ↓
-Consumers
-        ├── Feed signal update
-        ├── Notification
-        ├── Alert
-        └── Audit
+Dispatcher
+        ├── Feed Signal Consumer
+        ├── Notification Consumer
+        ├── Alert Consumer
+        ├── Audit Consumer
+        └── Other Consumers
 ```
+
+A reply follows the same business event contract, with parent-comment information identifying the reply relationship.
 
 ---
 
-# 75. End-to-End Share Scenario
+# 86. End-to-End Share Scenario
 
 ```text
-User selects Share
+User Selects Share
         ↓
-Share workflow
+Share / Post Workflow
         ↓
-Validate original Post
+Validate Original Post
         ↓
 Create Internal Share Post
         ↓
 Set SharedPostId
         ↓
-Do NOT duplicate original media/content
+Do Not Duplicate Original Content / Media
         ↓
-Publish
+Complete Share/Post State
         ↓
-Domain Event
+Social.Post.Shared
         ↓
 Transactional Outbox
         ↓
-Background Feed Distribution
+Commit
         ↓
-Shared Post appears in eligible feeds
+Dispatcher
+        ↓
+Feed Impact
+        ↓
+Audience / Eligibility
+        ↓
+Feed Distribution
 ```
 
 ---
 
-# 76. End-to-End Comment Media Scenario
+# 87. End-to-End Comment Media Scenario
 
 ```text
-User selects one image/video
+User Selects One Media Item
         ↓
 CommentManager
         ↓
 MediaUploader
         ↓
-Upload Gateway
+/api/media/upload-async
+        ↓
+MediaUploadService
         ↓
 Temporary Storage
         ↓
-Media ID
+Media Identifier
         ↓
-Comment Creation
+Comment Creation Workflow
         ↓
-Comment persisted
+Comment Persisted
         ↓
-Media finalized
+Media Finalization
         ↓
-Media assigned to Comment
+Media Assignment
         ↓
-CommentCreated / CommentReplied
+Social.Comment.Created
 ```
 
-The CommentManager never implements:
+CommentManager never implements:
 
 ```text
-file storage
-image processing
-finalization
-assignment
+File Storage
+Image Processing
+Media Finalization
+Media Assignment
 ```
 
 ---
 
-# 77. Social Media Component Boundaries
+# 88. Social Media Component Boundaries
 
 ## Post Composer
 
 Owns:
 
-* post composition UI;
-* client interaction;
-* media uploader integration;
+* composition UI;
 * form state;
-* submit/cancel;
+* interaction;
+* MediaUploader integration;
+* submit/cancel interaction;
 * rendering.
 
 Does not own:
 
 * Post business rules;
 * Feed generation;
-* notification;
-* media storage.
+* Notification;
+* Alerting;
+* media storage;
+* Post persistence.
+
+---
 
 ## MediaUploader
 
 Owns:
 
 * upload interaction;
-* upload state;
-* temporary upload communication;
 * file queue;
-* upload lifecycle;
-* upload events.
+* upload state;
+* temporary-upload communication;
+* lifecycle;
+* public upload events;
+* public API.
 
 Does not own:
 
 * Post;
 * Comment;
 * Feed;
-* final business transaction.
+* final business transaction;
+* media assignment business rules.
+
+---
 
 ## Reaction Component
 
 Owns:
 
-* reaction UI;
-* selected state presentation;
+* reaction presentation;
 * interaction;
-* calling reaction endpoint.
+* selected-state presentation;
+* calling the canonical Reaction endpoint.
 
 Does not own:
 
 * reaction persistence;
 * target authorization;
-* business transition logic.
+* Add/Change/Remove business rules;
+* Reaction aggregate persistence.
+
+---
 
 ## CommentManager
 
@@ -2365,118 +2940,138 @@ Owns:
 
 * comment UI;
 * tree interaction;
-* reply/edit states;
+* create/reply/edit interaction;
+* lazy expansion;
 * comment API interaction;
-* lazy expansion.
+* component state.
 
 Does not own:
 
 * comment business rules;
 * media storage;
 * notification;
-* Feed generation.
+* Feed generation;
+* authoritative comment-depth policy.
+
+---
 
 ## Feed Component
 
 Owns:
 
 * Feed presentation;
+* Feed card rendering;
 * interaction wiring;
-* Feed card rendering.
+* reusable component integration.
 
 Does not own:
 
 * Feed generation;
-* ranking;
+* Feed ranking;
+* Feed distribution;
 * Post creation;
 * Reaction persistence;
-* Comment persistence.
+* Comment persistence;
+* Share persistence.
 
 ---
 
-# 78. Reusable UI Contract
+# 89. Reusable UI Architecture
 
 Every reusable Social Media component follows:
 
 ```text
 ViewComponent
-    ↓
+      ↓
 ViewModel
-    ↓
+      ↓
 Builder
-    ↓
+      ↓
 Defaults
-    ↓
-Razor
-    ↓
-Component JS
-    ↓
+      ↓
+Razor View
+      ↓
+Component JavaScript
+      ↓
 Component CSS
 ```
 
-The component must be configured through its Builder.
+The Builder configures the ViewModel.
 
-Consumers communicate with the component only through public contracts.
+The ViewComponent renders.
+
+Defaults centralize defaults.
+
+Builders remain transient.
+
+Consumers interact through public component contracts.
 
 ---
 
-# 79. JavaScript Requirements
+# 90. JavaScript Requirements
 
 Social Media JavaScript must:
 
 * use `App.Modules.register`;
 * use WeakMap where instance storage is required;
-* use immutable/frozen configuration/constants where appropriate;
+* use immutable/frozen configuration and constants where appropriate;
 * expose public APIs only;
-* implement component lifecycle;
+* implement lifecycle;
 * support `init`;
 * support `bind`;
 * support `destroy`;
-* use `App.Events`.
+* use `App.Events`;
+* avoid duplicating server business rules.
 
 `site.js` remains foundation-only.
 
-No Social Media feature API or business logic is placed in `site.js`.
+No Social Media API or business logic belongs in `site.js`.
 
 ---
 
-# 80. Server Ownership
+# 91. Server Ownership
 
-The server remains authoritative for:
+The server is authoritative for:
 
+* authentication;
 * authorization;
 * visibility;
 * privacy;
 * target validation;
+* ownership;
 * relationship rules;
-* media ownership;
-* comment depth;
+* blocking;
 * moderation;
+* media ownership;
+* comment depth policy;
 * reaction transitions;
 * sharing rules;
 * Feed eligibility;
-* business events.
+* Feed distribution policy;
+* domain events;
+* audit requirements.
 
-JavaScript must never be trusted for these decisions.
+Client JavaScript must never be trusted for these decisions.
 
 ---
 
-# 81. Security Requirements
+# 92. Security Requirements
 
-Every social operation must validate:
+Every social mutation must validate:
 
 * authenticated user;
 * target existence;
+* target type;
 * target visibility;
 * target ownership/permission;
 * blocked relationships;
 * deleted state;
 * moderation state;
-* feature availability;
-* anti-forgery where applicable;
+* feature/policy availability;
+* anti-forgery requirements where applicable;
 * request validation.
 
-A user must never be able to manipulate another user's social content simply by changing:
+A user must never gain unauthorized access merely by changing:
 
 ```text
 TargetId
@@ -2490,66 +3085,73 @@ TargetType
 
 in a request.
 
----
-
-# 82. Soft Delete
-
-Social Media entities participating in the established soft-delete architecture must use the canonical lifecycle.
-
-Deletion must produce the appropriate business event where downstream consumers need to react.
-
-Example:
-
-```text
-PostDeleted
-```
-
-must allow Feed and other consumers to suppress the content.
-
-The Feed must not independently decide that a deleted Post still exists.
+Polymorphic targeting is a routing mechanism, not an authorization mechanism.
 
 ---
 
-# 83. Audit
+# 93. Soft Delete
 
-Important social mutations must participate in the established audit architecture.
+Social entities participating in the established soft-delete architecture must use the canonical soft-delete lifecycle.
 
-Examples:
-
-* Post deletion;
-* moderation-related changes;
-* visibility changes;
-* comment deletion;
-* administrative intervention;
-* account-level social restrictions.
-
-Audit is a cross-cutting concern and must not be implemented separately inside every social service.
-
----
-
-# 84. Administration Integration
-
-Administration controls policy.
-
-It does not directly manipulate social tables.
+When deletion represents an event-relevant business fact, the appropriate event must be emitted.
 
 For example:
 
 ```text
-Admin
-  ↓
-Comment Policy
-  ↓
-Configured Maximum Reply Depth
-  ↓
-Comment Service
+Post Deleted
+    ↓
+Social.Post.Deleted
+    ↓
+Feed Impact
 ```
 
-not:
+Feed must not independently decide that an authoritative deleted Post remains active.
+
+---
+
+# 94. Audit
+
+Important Social Media mutations participate in the established audit architecture.
+
+Examples include:
+
+* Post deletion;
+* Post visibility changes;
+* Comment deletion;
+* moderation-related changes;
+* administrative intervention;
+* account-level social restrictions;
+* other privileged or security-sensitive social mutations.
+
+Audit remains a cross-cutting capability.
+
+Individual Social services must not create competing audit infrastructures.
+
+---
+
+# 95. Administration Integration
+
+Administration governs policy.
+
+Administration does not directly manipulate Social domain tables.
+
+Correct:
+
+```text
+Admin
+   ↓
+Comment Policy
+   ↓
+Configured Maximum Reply Depth
+   ↓
+Comment Application Service
+```
+
+Incorrect:
 
 ```text
 Admin Controller
-  ↓
+   ↓
 Comment Table
 ```
 
@@ -2557,9 +3159,9 @@ Likewise:
 
 ```text
 Admin
-  ↓
+   ↓
 Moderation Policy
-  ↓
+   ↓
 Social Domain/Application Service
 ```
 
@@ -2567,9 +3169,9 @@ remains the canonical path.
 
 ---
 
-# 85. Moderation Integration
+# 96. Moderation Integration
 
-Social Media must integrate with the canonical Administration moderation system.
+Social Media integrates with the established Administration moderation architecture.
 
 Potential moderation actions include:
 
@@ -2579,86 +3181,17 @@ Potential moderation actions include:
 * suspend;
 * escalate.
 
-Moderation is not implemented as a special Feed rule.
+Moderation is not implemented as an ad-hoc Feed rule.
 
-A moderated Post remains governed by the authoritative Post/moderation state, and Feed eligibility responds to the resulting event/state.
+The authoritative Post/Comment/moderation state determines whether content remains eligible for presentation.
 
----
-
-# 86. Notification Integration Contract
-
-Social events may produce notifications.
-
-Examples include:
-
-```text
-PostPublished
-CommentCreated
-CommentReplied
-ReactionAdded
-ReactionChanged
-InternalPostShared
-```
-
-The exact recipient rules belong to Recipient Resolution and Notification Policy.
-
-Social services must not directly decide notification presentation.
+Feed responds to that authoritative state and its corresponding events.
 
 ---
 
-# 87. Alert Integration Contract
+# 97. Social Event Specification Requirement
 
-Social events may become Alert sources.
-
-Alerting remains generic.
-
-The Social Media subsystem contributes source/policy definitions rather than modifying the generic Alert engine.
-
-This preserves:
-
-```text
-Generic Alert Platform
-+
-Domain-specific Alert Sources
-```
-
-instead of:
-
-```text
-One Giant Alert Switch
-```
-
----
-
-# 88. Feed Event Processing Requirements
-
-For every Feed-relevant event, the implementation documentation must explicitly describe:
-
-```text
-1. Business operation
-2. Domain state change
-3. Domain event raised
-4. Transactional Outbox persistence
-5. Dispatcher
-6. Event handler
-7. Audience / candidate resolution
-8. Feed eligibility
-9. Feed distribution
-10. Ranking/signal update
-11. Idempotency
-12. Failure/retry behavior
-13. Notification impact
-14. Alert impact
-15. Tests
-```
-
-This sequence becomes mandatory for future Social Media event documentation.
-
----
-
-# 89. Required Event Specifications
-
-Before implementation of a Social Media event, each event must receive its own event specification containing:
+Before implementation of any Feed-relevant Social event, the event must have an explicit specification containing:
 
 ```text
 Event Name
@@ -2679,241 +3212,109 @@ Retry Behaviour
 Authorization Context
 Audit Requirements
 Failure Behaviour
+Worker / Operational Considerations
 Tests
 ```
 
-No event should be implemented merely because a UI action exists.
+No event should be implemented merely because a UI button exists.
 
 ---
 
-# 90. Required Social Media Event Catalog
+# 98. Complete Feed Event Lifecycle Requirement
 
-The canonical event catalog should be established around the following groups.
-
-## Post
+Every Feed-relevant event must be documented and tested through:
 
 ```text
-PostCreated
-PostPublished
-PostUpdated
-PostVisibilityChanged
-PostDeleted
-PostRestored
+1. Business Operation
+2. Authoritative State Change
+3. Domain Event
+4. Transactional Outbox Persistence
+5. Transaction Commit
+6. Dispatcher
+7. Event Handler
+8. Audience / Candidate Resolution
+9. Feed Eligibility
+10. Feed Distribution / Projection
+11. Ranking / Signal Update
+12. Idempotency
+13. Failure / Retry
+14. Notification Impact
+15. Alert Impact
+16. Audit Impact where applicable
+17. Worker Health Impact where applicable
+18. Tests
 ```
 
-## Sharing
+Not every event executes every stage with a business effect.
 
-```text
-InternalPostShared
-InternalPostShareRemoved
-ExternalPostShared
-```
-
-Exact names remain subject to the canonical Event Catalog naming contract.
-
-## Reaction
-
-```text
-ReactionAdded
-ReactionChanged
-ReactionRemoved
-```
-
-## Comment
-
-```text
-CommentCreated
-CommentReplied
-CommentUpdated
-CommentDeleted
-CommentRestored
-```
-
-## Media
-
-```text
-MediaUploaded
-MediaFinalized
-MediaAssigned
-MediaAssignmentRemoved
-MediaDeleted
-```
-
-## Social Graph
-
-```text
-FriendshipAccepted
-FriendshipRemoved
-FollowCreated
-FollowRemoved
-BlockCreated
-BlockRemoved
-```
-
-Only events that represent actual business transitions should be finalized in the canonical Event Catalog.
+The specification must explicitly state which stages apply.
 
 ---
 
-# 91. Event Naming Rule
+# 99. Read / Write Separation
 
-Events must describe what **happened**, not what a consumer intends to do.
-
-Good:
-
-```text
-PostPublished
-ReactionAdded
-CommentCreated
-```
-
-Avoid:
-
-```text
-GenerateFeedForPost
-SendNotificationForComment
-CreateAlertForReaction
-```
-
-The latter are consumer commands, not domain facts.
-
----
-
-# 92. Feed Consumer Naming
-
-Feed handlers may consume domain events and perform Feed work.
-
-For example:
-
-```text
-PostPublished
-      ↓
-PostPublishedFeedHandler
-```
-
-The handler is a consumer.
-
-It must not redefine:
-
-```text
-PostPublished
-```
-
-as a Feed-specific domain event.
-
----
-
-# 93. Feed Distribution Does Not Create Business Truth
-
-A Feed record is derived from business truth.
-
-Therefore:
-
-```text
-Feed missing
-```
-
-does not mean:
-
-```text
-Post does not exist
-```
-
-The recovery mechanism is:
-
-```text
-Post/Event
-        ↓
-Feed projection/distribution
-```
-
-not manual reconstruction of the Post.
-
----
-
-# 94. Feed Rebuild Requirement
-
-Because Feed is derived from authoritative domain events/state, the architecture should remain capable of rebuilding Feed projections where required.
-
-The system must not make Feed the only source of information about social content.
-
-This is particularly important for:
-
-* data recovery;
-* projection rebuilds;
-* ranking changes;
-* new Feed surfaces;
-* future recommendation systems.
-
----
-
-# 95. Performance Requirements
-
-The architecture must avoid:
-
-* synchronous fan-out to thousands of users during Post creation;
-* repeated database queries per Feed card;
-* duplicate target loading;
-* N+1 relationship queries;
-* duplicate media queries;
-* repeated Reaction target resolution.
-
-The Feed context builder must prepare the required context efficiently.
-
-The Feed card factory must remain pure.
-
----
-
-# 96. Social Media Read vs Write Separation
-
-Write operations:
+Write operations include:
 
 ```text
 Post Creation
+Post Update
+Post Visibility Change
 Comment Creation
+Comment Update
 Reaction Mutation
-Share
+Internal Share
 Media Assignment
 ```
 
-must be handled by application/domain services.
+These are handled by appropriate application/domain services.
 
-Read operations:
+Read operations include:
 
 ```text
 Feed Timeline
-Comments
-Reaction summaries
-Post details
-Profile timeline
+Post Detail
+Comment Tree
+Reaction Summary
+Profile Timeline
+Shared Post Context
 ```
 
-must use appropriate query/read services.
+These use appropriate query/read services.
 
 Controllers remain thin.
 
 ---
 
-# 97. Repository Boundary
+# 100. Repository and Loader Boundary
 
-Business services must not directly manipulate repositories as part of business orchestration where the locked loader/service architecture applies.
+Business/application services must follow the established SocialConnect loader and service architecture.
 
-Use:
+Where a loader contract applies:
 
 ```text
 Application Service
         ↓
-Domain/Application operation
+Loader / Lookup
         ↓
-Loader / Lookup / Repository infrastructure
+Repository / Persistence
 ```
 
-according to the established SocialConnect architecture.
+must be preferred over direct repository orchestration inside business services.
+
+The established abstractions include:
+
+```text
+IEntityLoader<TEntity,TKey>
+ITrackedEntityLoader<TEntity,TKey>
+```
 
 Repositories remain persistence-oriented.
 
+Business services do not expose or depend on arbitrary `IQueryable` infrastructure merely to move business logic into application code.
+
 ---
 
-# 98. No God Services
+# 101. No God Service
 
 The Social Media subsystem must not create a service such as:
 
@@ -2921,7 +3322,7 @@ The Social Media subsystem must not create a service such as:
 SocialMediaService
 ```
 
-that handles:
+responsible for:
 
 * Posts;
 * Comments;
@@ -2930,185 +3331,457 @@ that handles:
 * Sharing;
 * Feed;
 * Notifications;
-* Alerts.
+* Alerts;
+* Social Graph.
 
-Instead, responsibilities remain separated.
-
----
-
-# 99. Canonical Responsibility Map
-
-| Capability                 | Owner                              |
-| -------------------------- | ---------------------------------- |
-| Post creation              | Post Creation application workflow |
-| Post business state        | Post domain                        |
-| Media upload               | MediaUploader / MediaUploadService |
-| Media finalization         | MediaFinalizationService           |
-| Media assignment           | MediaAssignmentService             |
-| Reaction mutation          | Reaction service                   |
-| Reaction target resolution | Reaction target resolver           |
-| Comment mutation           | Comment service                    |
-| Comment tree policy        | Comment/Admin policy               |
-| Comment rendering          | CommentManager                     |
-| Sharing                    | Share/Post workflow                |
-| Feed orchestration         | FeedTimelineService                |
-| Feed context               | FeedTimelineContextBuilder         |
-| Feed reaction mapping      | FeedReactionResolver               |
-| Feed card mapping          | FeedCardFactory                    |
-| Feed distribution          | Feed processing/handler            |
-| Feed ranking               | Feed ranking boundary              |
-| Notification               | Notification subsystem             |
-| Alerting                   | Alerting subsystem                 |
-| Audit                      | Canonical audit infrastructure     |
+Responsibilities remain separated.
 
 ---
 
-# 100. Acceptance Criteria
+# 102. Canonical Responsibility Map
 
-The Social Media subsystem is considered architecturally complete only when:
+| Capability                    | Owner                              |
+| ----------------------------- | ---------------------------------- |
+| Post creation                 | Post Creation application workflow |
+| Post business state           | Post domain                        |
+| Post lifecycle events         | Post domain/application boundary   |
+| Media upload                  | MediaUploader / MediaUploadService |
+| Media finalization            | MediaFinalizationService           |
+| Media assignment              | MediaAssignmentService             |
+| Reaction mutation             | Reaction service                   |
+| Reaction target resolution    | Reaction target resolver           |
+| Comment mutation              | Comment service                    |
+| Comment tree policy           | Comment/Admin policy               |
+| Comment rendering             | CommentManager                     |
+| Sharing                       | Share/Post workflow                |
+| Feed orchestration            | FeedTimelineService                |
+| Feed context                  | FeedTimelineContextBuilder         |
+| Feed reaction mapping         | FeedReactionResolver               |
+| Feed card mapping             | FeedCardFactory                    |
+| Feed distribution             | Feed processing / event handler    |
+| Feed eligibility              | Feed policy/application boundary   |
+| Feed ranking                  | Feed ranking boundary              |
+| Notification                  | Notification subsystem             |
+| Alerting                      | Alerting subsystem                 |
+| Worker health                 | Application-wide Worker Health     |
+| Audit                         | Canonical audit infrastructure     |
+| External provider integration | Infrastructure adapters            |
 
-### Posts
+---
 
-* Posts can be created through the canonical Post workflow.
-* Posts can contain text and supported media.
+# 103. Performance Requirements
+
+The Social Media architecture must avoid:
+
+* synchronous fan-out to thousands of users during Post creation;
+* N+1 queries in Feed rendering;
+* repeated author/profile queries;
+* duplicate media loading;
+* duplicate Reaction target resolution;
+* unnecessary recursive shared-Post loading;
+* repeated Social Graph queries for the same Feed context.
+
+Feed context preparation must be efficient.
+
+FeedCardFactory must remain pure mapping.
+
+Feed distribution must support controlled throughput and asynchronous processing.
+
+---
+
+# 104. Feed Distribution Failure Model
+
+A Feed distribution failure must not roll back an already committed Post merely because Feed processing failed afterward.
+
+Correct:
+
+```text
+Post Transaction
+       ↓
+Commit
+       ↓
+Post Exists
+       ↓
+Feed Processing Fails
+       ↓
+Event / Handler Retry
+       ↓
+Feed Eventually Updated
+```
+
+The authoritative business transaction and asynchronous Feed processing therefore have different failure domains.
+
+---
+
+# 105. Recovery and Reprocessing
+
+Because Social event processing is durable and idempotent, Feed processing must support recovery after:
+
+* worker crash;
+* application restart;
+* database interruption;
+* dispatcher interruption;
+* event-handler failure;
+* lease expiration;
+* transient infrastructure failure.
+
+Recovery must rely on the established Event/Outbox/Worker Health architecture.
+
+Social Media must not create a separate recovery framework.
+
+---
+
+# 106. Notification and Feed Independence
+
+Notification and Feed are independent consumers.
+
+For example:
+
+```text
+Social.Post.Created
+        ├── Feed Consumer
+        └── Notification Consumer
+```
+
+A Notification failure must not corrupt the Feed business model.
+
+A Feed failure must not corrupt Notification persistence.
+
+The same business event may therefore produce different downstream outcomes without changing the authoritative Post state.
+
+---
+
+# 107. Alerting and Feed Independence
+
+Alerting observes operational evidence.
+
+A Feed degradation condition may become an Alert, but Alerting does not become the Feed execution engine.
+
+Correct:
+
+```text
+Feed Worker
+    ↓
+Worker Health
+    ↓
+Operational Evidence
+    ↓
+Alert Policy
+    ↓
+Alert
+```
+
+Incorrect:
+
+```text
+Alert Service
+    ↓
+Run Feed Worker
+```
+
+---
+
+# 108. External Operational Sinks
+
+If Alerting eventually delivers to external operational systems, Social Media remains isolated from the provider.
+
+The boundary remains:
+
+```text
+Alerting
+   ↓
+Internal External-Sink Contract
+   ↓
+Infrastructure Adapter
+   ↓
+External Operational Provider
+```
+
+Social Media must not contain vendor-specific operational sink logic.
+
+---
+
+# 109. Facebook-Class Product Benchmark
+
+SocialConnect uses the established social-network product model as a functional benchmark.
+
+The intended Feed capability includes:
+
+* personalized content;
+* relationship-aware content;
+* recency;
+* engagement signals;
+* candidate selection;
+* ranking;
+* content diversity;
+* user controls;
+* continuous refinement.
+
+The requirement is not to reproduce another platform's proprietary implementation.
+
+The architectural objective is:
+
+```text
+Candidate Generation
+→ Eligibility
+→ Ranking
+→ Distribution
+→ Presentation
+```
+
+rather than a Feed implemented merely as:
+
+```text
+SELECT TOP 50 Posts
+ORDER BY CreatedAt DESC
+```
+
+---
+
+# 110. Social Media Domain Boundaries
+
+The following ownership boundaries are mandatory:
+
+```text
+Post
+    owns Post business truth
+
+Comment
+    owns Comment business truth
+
+Reaction
+    owns Reaction business truth
+
+Media
+    owns Media lifecycle
+
+Sharing
+    owns Share business operation
+
+Social Graph
+    owns relationship truth
+
+Feed
+    owns derived distribution/presentation state
+
+Notification
+    owns notification truth
+
+Alerting
+    owns operational alert truth
+
+Event Platform
+    owns durable event transport
+
+Worker Health
+    owns worker operational evidence
+```
+
+No subsystem may silently take ownership of another subsystem's authoritative state.
+
+---
+
+# 111. Acceptance Criteria
+
+The Social Media subsystem is architecturally complete only when the following requirements are demonstrable.
+
+## Posts
+
+* Posts can be created through the canonical Post Creation workflow.
+* Posts can contain supported content and media.
 * Visibility is enforced server-side.
 * Location is handled according to policy.
-* Post publication produces the appropriate event.
+* `Social.Post.Created` is emitted according to the canonical Event Catalog.
+* Post updates produce the appropriate event where required.
+* Post visibility changes affect downstream eligibility where applicable.
 * Post deletion affects downstream Feed state.
 
-### Media
+## Media
 
 * MediaUploader is the single reusable upload gateway.
 * Automatic upload is supported.
 * Manual upload is supported.
 * Temporary storage is distinct from final storage.
 * Finalization is separate from assignment.
-* Consumers do not implement their own upload pipelines.
+* Consumers do not implement independent upload pipelines.
 * Comments support at most one media attachment.
+* Media lifecycle remains independent from Feed business logic.
 
-### Reactions
+## Reactions
 
 * One canonical mutation endpoint exists.
-* Add/change/remove transitions are resolved by the service.
-* TargetType + TargetId is used.
-* Feed does not own reaction persistence.
-* Reaction events are emitted.
+* Add/change/remove transitions are resolved server-side.
+* `TargetType + TargetId` is used.
+* Feed does not own Reaction persistence.
+* Reaction aggregate belongs to the target.
+* Reaction business events are emitted according to the Event Catalog.
+* Reaction processing is idempotent.
 
-### Comments
+## Comments
 
 * Comment trees are supported.
 * Parent-child relationships are authoritative.
-* Maximum depth is policy-controlled.
+* Maximum domain depth is policy-controlled.
+* Rendering depth remains distinguishable from domain depth.
 * Tree rendering supports expansion/collapse.
 * CommentManager remains reusable.
 * Comment media uses MediaUploader.
-* One comment has at most one media attachment.
+* One Comment has at most one media attachment.
+* Comment business events follow the canonical Event Catalog.
 
-### Sharing
+## Sharing
 
-* Internal shares create a new Post/reference.
-* Shared content/media are not duplicated.
-* Shared Post graphs have depth/cycle protection.
-* Sharing produces a business event.
+* Internal shares create a new Post/reference relationship.
+* Original content and media are not duplicated as authoritative business state.
+* `SharedPostId` is used according to the locked Share contract.
+* Shared graphs have maximum-depth and cycle protection.
+* `Social.Post.Shared` is used according to the canonical Event Catalog.
+* External sharing is distinct from internal Feed distribution.
 
-### Feed
+## Feed
 
 * Feed generation is separate from Post creation.
 * Feed processing is event-driven.
-* Feed can execute asynchronously.
-* Feed is not the authoritative content store.
-* Feed does not own reactions.
-* Feed does not own comments.
-* Feed consumes social events.
-* Ranking is separate from candidate generation.
+* Feed processing may execute asynchronously.
+* Feed is not the authoritative social content store.
+* Feed does not own Reactions.
+* Feed does not own Comments.
+* Feed consumes Social events.
+* Feed distinguishes candidate generation from ranking.
+* Feed distinguishes ranking from rendering.
 * Feed distribution is idempotent.
+* Feed can be rebuilt/reprocessed from authoritative state/events where required.
 
-### Events
+## Events
 
-* Social business operations produce domain events.
-* Events are persisted transactionally through Outbox.
+* Social business operations produce the appropriate domain events.
+* Events are persisted transactionally through the established Outbox.
 * Dispatcher processing is durable.
-* Handlers are idempotent.
-* Feed/Notification/Alert are independent consumers.
+* Consumers are idempotent.
+* Feed, Notification, and Alerting remain independent consumers.
 * Event contracts are explicitly documented.
 * Each Feed-relevant event has an end-to-end specification.
+* No consumer-specific command is disguised as a domain event.
+
+## Worker Health
+
+* Feed workers participate in the application-wide Worker Health platform.
+* Worker heartbeat/progress/success/failure evidence is available through the common contract.
+* Feed does not create a private health subsystem.
+* Alerting can evaluate Feed operational evidence.
+
+## External Dependencies
+
+* External providers are isolated behind internal contracts.
+* Vendor SDKs do not leak into Social domain/application logic.
+* Provider-specific retry behavior remains in the appropriate failure domain.
+* Vendor replacement does not require redesigning Social business logic.
 
 ---
 
-# 101. Canonical Social Media Architecture
+# 112. Canonical Social Media Architecture
 
-The complete architecture can therefore be summarized as:
+The complete architecture is:
 
 ```text
                          SOCIALCONNECT
                          SOCIAL MEDIA
                               │
-        ┌─────────────────────┼──────────────────────┐
-        │                     │                      │
-        ▼                     ▼                      ▼
-      POST                 COMMENT                REACTION
-        │                     │                      │
-        │                     │                      │
-        └──────────────┬──────┴──────────────┬───────┘
-                       │                     │
-                       ▼                     ▼
-                    MEDIA                SHARING
-                       │                     │
-                       └──────────┬──────────┘
-                                  │
-                                  ▼
-                         BUSINESS TRANSACTION
-                                  │
-                                  ▼
-                           DOMAIN EVENT
-                                  │
-                                  ▼
-                         TRANSACTIONAL OUTBOX
-                                  │
-                                  ▼
-                             DISPATCHER
-                                  │
-                ┌─────────────────┼──────────────────┐
-                │                 │                  │
-                ▼                 ▼                  ▼
-              FEED          NOTIFICATION          ALERT
-                │
-                ▼
-       CANDIDATE INVENTORY
-                │
-                ▼
-           ELIGIBILITY
-                │
-                ▼
-            RANKING
-                │
-                ▼
-        FEED DISTRIBUTION
-                │
-                ▼
+       ┌──────────────────────┼──────────────────────┐
+       │                      │                      │
+       ▼                      ▼                      ▼
+     POST                  COMMENT                REACTION
+       │                      │                      │
+       │                      │                      │
+       └──────────────┬───────┴──────────────┬───────┘
+                      │                      │
+                      ▼                      ▼
+                   MEDIA                 SHARING
+                      │                      │
+                      └──────────┬───────────┘
+                                 │
+                                 ▼
+                       BUSINESS TRANSACTION
+                                 │
+                                 ▼
+                         DOMAIN EVENT
+                                 │
+                                 ▼
+                    TRANSACTIONAL OUTBOX
+                                 │
+                                 ▼
+                            DISPATCHER
+                                 │
+                 ┌───────────────┼────────────────┐
+                 │               │                │
+                 ▼               ▼                ▼
+               FEED        NOTIFICATION       ALERTING
+                 │
+                 ▼
+        CANDIDATE GENERATION
+                 │
+                 ▼
+             ELIGIBILITY
+                 │
+                 ▼
+              RANKING
+                 │
+                 ▼
+          FEED DISTRIBUTION
+                 │
+                 ▼
         FEED TIMELINE CONTEXT
-                │
-                ▼
+                 │
+                 ▼
           FEED CARD FACTORY
-                │
-                ▼
-               UI
-                │
-       ┌────────┼─────────┐
-       ▼        ▼         ▼
-    React    Comment     Share
-       │        │         │
-       └────────┴─────────┘
-                │
-                ▼
-        NEW BUSINESS EVENTS
+                 │
+                 ▼
+                UI
+                 │
+        ┌────────┼──────────┐
+        ▼        ▼          ▼
+     Reaction  Comment     Share
+        │        │          │
+        └────────┴──────────┘
+                 │
+                 ▼
+          BUSINESS EVENTS
+                 │
+                 ▼
+          FURTHER IMPACT
+```
+
+Operationally:
+
+```text
+Feed / Notification / Event Workers
+                ↓
+          Worker Health
+                ↓
+       Operational Evidence
+                ↓
+       Alert Source / Policy
+                ↓
+             Alert
+```
+
+And for external providers:
+
+```text
+Business / Application
+        ↓
+Internal Contract
+        ↓
+Infrastructure Adapter
+        ↓
+External Provider
 ```
 
 ---
 
-# 102. Final Architectural Contract
+# 113. Final Architectural Contract
 
-The SocialConnect Social Media subsystem is governed by the following principles:
+The SocialConnect Social Media subsystem is governed by these principles:
 
 1. **Posts are authoritative social content.**
 2. **Media is a generic cross-cutting platform capability.**
@@ -3118,37 +3791,59 @@ The SocialConnect Social Media subsystem is governed by the following principles
 6. **Comments use the same generic MediaUploader.**
 7. **A Comment may contain at most one media attachment.**
 8. **Reactions have one canonical mutation gateway.**
-9. **Reaction state is determined server-side as add/change/remove.**
-10. **TargetType + TargetId remains the canonical polymorphic target mechanism.**
-11. **Feed does not own reactions.**
-12. **Feed does not own comments.**
-13. **Feed is a distribution/presentation projection of authoritative social content.**
+9. **Reaction state is determined server-side as Add, Change, or Remove.**
+10. **`TargetType + TargetId` remains the canonical polymorphic target mechanism.**
+11. **Feed does not own Reactions.**
+12. **Feed does not own Comments.**
+13. **Feed is a derived distribution/presentation system.**
 14. **Post creation and Feed generation are separate responsibilities.**
 15. **Feed generation is event-driven.**
-16. **Feed propagation may execute asynchronously through durable background processing.**
-17. **Transactional Outbox is the durable bridge between business transactions and downstream social processing.**
-18. **Every important social business operation produces an explicit domain event.**
+16. **Feed propagation may execute asynchronously.**
+17. **Transactional Outbox is the durable bridge between authoritative business transactions and downstream processing.**
+18. **Important Social business operations produce explicit domain events according to the canonical Event Catalog.**
 19. **Domain events describe business facts, not consumer commands.**
-20. **Feed handlers consume events; they do not redefine domain ownership.**
-21. **Engagement events update Feed signals rather than creating duplicate Feed stories.**
-22. **Post publication creates Feed candidates; reactions/comments generally modify signals.**
-23. **Social graph changes can alter Feed eligibility.**
-24. **Feed ranking is separate from Feed candidate generation.**
-25. **Feed rendering is separate from Feed generation.**
-26. **Comment tree policy is administratively configurable.**
-27. **Reusable components own their interaction domain but never own business authority.**
-28. **Notification and Alerting consume social events independently of Feed.**
-29. **No social subsystem may become a God service.**
-30. **Every Feed-relevant event must be documented through the complete business-event lifecycle.**
-31. **All downstream consumers must be idempotent.**
-32. **Authoritative social state always remains in its owning domain, never in Feed.**
-33. **Facebook-class functionality is the product benchmark; SocialConnect's implementation remains governed by its own canonical architecture and contracts.**
+20. **The existing Event Catalog is authoritative for event names and semantics.**
+21. **A new event must not be invented merely to simplify downstream implementation.**
+22. **`Social.Post.Created` does not automatically mean unconditional Feed distribution.**
+23. **Feed eligibility determines whether a Post becomes a Feed candidate.**
+24. **`Social.Post.Shared` represents the established Post sharing event.**
+25. **Comment replies use the canonical Comment event contract unless the Event Catalog is deliberately revised.**
+26. **Engagement events generally update Feed signals rather than creating duplicate Feed stories.**
+27. **Social Graph changes can alter Feed eligibility and ranking.**
+28. **Feed candidate generation is separate from Feed eligibility.**
+29. **Feed eligibility is separate from Feed ranking.**
+30. **Feed ranking is separate from Feed rendering.**
+31. **Feed rendering is separate from Feed business processing.**
+32. **Feed is not an authoritative source of social content.**
+33. **Feed distributions must be idempotent.**
+34. **Feed must remain rebuildable/reprocessable from authoritative state/events where required.**
+35. **Comment tree policy is administratively configurable.**
+36. **Domain comment depth and component rendering depth remain separate concepts.**
+37. **Reusable components own their interaction domain but never own business authority.**
+38. **Server-side application/domain logic remains authoritative over client-side behavior.**
+39. **Notification consumes Social events independently of Feed.**
+40. **Alerting consumes operational/business evidence independently of Feed and Notification.**
+41. **Worker Health is application-wide and must support current and future workers.**
+42. **Alerting does not own worker execution or recovery.**
+43. **Retry and recovery remain separated by failure domain.**
+44. **No Social subsystem may create a universal retry or self-healing service.**
+45. **External dependencies are isolated behind internal contracts and infrastructure adapters.**
+46. **Vendor-specific SDKs and payloads do not leak into business/application logic.**
+47. **Audit remains a cross-cutting platform capability.**
+48. **Administration governs Social policy without bypassing domain/application ownership.**
+49. **Moderation changes authoritative social state/policy; Feed responds to that state.**
+50. **No Social subsystem may become a God service.**
+51. **Every Feed-relevant event must be documented through the complete business-event lifecycle.**
+52. **Every asynchronous consumer must be idempotent.**
+53. **Strong consistency applies to authoritative Social state and required event persistence.**
+54. **Eventual consistency is acceptable for downstream Feed, Notification, Alert, and derived processing.**
+55. **Facebook-class functionality is the product capability benchmark; SocialConnect implementation remains governed by its own canonical architecture and contracts.**
 
 ---
 
-# 103. Implementation Sequence
+# 114. Implementation Sequence
 
-The implementation should follow the architecture rather than mixing all social features together.
+Implementation must follow the finalized architecture rather than mixing all Social capabilities into one development phase.
 
 ## Phase 1 — Contract Finalization
 
@@ -3161,8 +3856,11 @@ Finalize:
 * Comment requirements;
 * Sharing requirements;
 * Feed requirements;
-* Social Event Catalog;
+* Social Graph requirements;
+* Social Event Catalog alignment;
 * Feed Event Impact Matrix.
+
+---
 
 ## Phase 2 — Media
 
@@ -3176,17 +3874,37 @@ MediaFinalizationService
 MediaAssignmentService
 ```
 
+Verify both:
+
+```text
+Automatic Upload
+Manual Upload
+```
+
+---
+
 ## Phase 3 — Post
 
 Finalize:
 
 ```text
 Post Creation
-Post Publication
+Post State
 Post Visibility
+Post Location
 Post Media
 Post Events
 ```
+
+Verify:
+
+```text
+Post Operation
+→ Social.Post.Created
+→ Outbox
+```
+
+---
 
 ## Phase 4 — Reaction
 
@@ -3198,6 +3916,18 @@ Reaction Mutation
 Reaction Aggregate
 Reaction Events
 ```
+
+Verify:
+
+```text
+Add
+Change
+Remove
+```
+
+through the single canonical mutation gateway.
+
+---
 
 ## Phase 5 — Comment
 
@@ -3212,16 +3942,33 @@ Comment Media
 Comment Events
 ```
 
+Verify:
+
+```text
+Domain Depth
++
+Rendering Depth
+```
+
+remain properly separated.
+
+---
+
 ## Phase 6 — Sharing
 
 Finalize:
 
 ```text
 Internal Share
-SharedPost Graph
+SharedPostId
+Shared Post Graph
+Maximum Share Depth
 Cycle Protection
-Share Events
+Social.Post.Shared
+External Share
 ```
+
+---
 
 ## Phase 7 — Feed
 
@@ -3238,46 +3985,82 @@ FeedCardFactory
 FeedTimelineService
 ```
 
-## Phase 8 — Event Vertical Slices
+---
 
-For every Feed-relevant event:
+## Phase 8 — Feed Event Vertical Slices
+
+For each Feed-relevant event:
 
 ```text
 Business Operation
-→ Event
+→ Authoritative State
+→ Domain Event
 → Outbox
 → Dispatcher
 → Handler
-→ Candidate/Audience Resolution
+→ Candidate / Audience Resolution
+→ Eligibility
 → Feed Impact
+→ Idempotency
+→ Retry / Recovery
 → Tests
 ```
 
-## Phase 9 — Notification / Alert Vertical Slices
+---
 
-Then prove:
+## Phase 9 — Notification and Alerting Integration
+
+Prove independently:
 
 ```text
 Business Operation
-→ Event
+→ Domain Event
 → Outbox
 → Dispatcher
-→ Event Handler
-→ Recipient Resolution
-→ Notification
-→ Alert
-→ Feed Impact
+→ Consumer
+→ Recipient Resolution / Alert Policy
+→ Notification / Alert
 → Tests
 ```
 
-## Phase 10 — End-to-End Social Verification
+Feed remains an independent consumer.
 
-Finally verify complete vertical slices:
+---
+
+## Phase 10 — Worker Health Integration
+
+Verify Feed and future Social workers participate in:
+
+```text
+Worker
+  ↓
+Common Worker Health Contract
+  ↓
+Heartbeat
+Progress
+Success
+Failure
+Current Operation
+  ↓
+Operational Evidence
+  ↓
+Alert Policy
+```
+
+No Feed-specific Worker Health implementation is permitted.
+
+---
+
+## Phase 11 — End-to-End Social Verification
+
+Verify complete vertical slices such as:
 
 ```text
 Post Creation
-→ PostPublished
+→ Social.Post.Created
 → Outbox
+→ Dispatcher
+→ Feed Impact
 → Feed Distribution
 → Feed Rendering
 → Reaction
@@ -3286,12 +4069,15 @@ Post Creation
 → Comment
 → Comment Event
 → Notification
-→ Alert
+→ Operational Evidence
+→ Alerting
 ```
+
+Each stage must be independently observable and testable.
 
 ---
 
-# 104. Definition of Done
+# 115. Definition of Done
 
 The Social Media subsystem is not considered complete merely because:
 
@@ -3305,30 +4091,69 @@ or:
 Feed displays Posts
 ```
 
-It is complete when the **business-event-driven social lifecycle** is demonstrably working.
+It is complete when the **business-event-driven Social lifecycle** is demonstrably correct.
 
-The final proof must show:
+The final proof must establish:
 
 ```text
 Business Operation
         ↓
-Domain State
+Authoritative Domain State
         ↓
 Domain Event
         ↓
 Transactional Outbox
         ↓
+Transaction Commit
+        ↓
 Dispatcher
         ↓
-Handler
+Event Handler
         ↓
-Feed / Notification / Alert Impact
+Business Impact
+        ├── Feed
+        ├── Notification
+        ├── Alerting
+        ├── Audit
+        └── Other Consumer
         ↓
 Idempotency
         ↓
 Failure / Retry
         ↓
+Worker Health / Operational Evidence
+        ↓
 Correct UI Projection
 ```
 
-That sequence is the core architectural contract of SocialConnect's Social Media subsystem.
+The authoritative business state must remain in its owning domain throughout the entire lifecycle.
+
+The Feed must remain a derived distribution system.
+
+Notification must remain a notification platform.
+
+Alerting must remain an operational alert platform.
+
+Worker Health must remain the application-wide source of worker operational evidence.
+
+External providers must remain behind internal contracts and infrastructure adapters.
+
+The Social Media subsystem is therefore complete only when the entire chain is demonstrably correct:
+
+```text
+BUSINESS TRUTH
+      ↓
+EVENT
+      ↓
+DURABLE ASYNCHRONOUS PROCESSING
+      ↓
+DOMAIN-SPECIFIC IMPACT
+      ↓
+DERIVED PROJECTIONS / COMMUNICATIONS
+      ↓
+OBSERVABILITY
+      ↓
+RECOVERY
+```
+
+This is the canonical SocialConnect Social Media architecture and requirements contract from which the individual Social Media domain/model requirements must be derived.
