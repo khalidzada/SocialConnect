@@ -512,6 +512,7 @@ It provides the foundation that individual module documentation builds upon.
 * [Administration  Panel SRS](docs/Modules/Administratioin/Admin-SRS.md)
 * [SocialConnect Application User and Identity ](docs/Modules/ApplicationUser/AppUserModel.md)
 * [SocialConnect Application User Profile](docs/Modules/UserProfile/UserProfileSRS.md)
+* [SocialConnect Social Media Function Requirements](docs/Modules/SocialMedia/SocialMediaFunctionalReq.md) 
 
 ### Cross-Cutting Engineering
 
