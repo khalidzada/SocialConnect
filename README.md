@@ -52,8 +52,8 @@ The project emphasizes:
 * Traceable architectural decisions
 * Long-term extensibility
 
-The Official Project Review Document is Here ['SocilaConnect Project Overview'](docs/requirements/Project-Overview.md) 
-The Project Feasibility Document is Here ['SocilaConnect Feasibility Overview'](docs/requirements/Market-Value-and-Business-Model.md)
+*The Official Project Review Document is Here ['SocilaConnect Project Overview'](docs/requirements/Project-Overview.md) 
+*The Project Feasibility Document is Here ['SocilaConnect Feasibility Overview'](docs/requirements/Market-Value-and-Business-Model.md)
 ---
 
 # 🏗️ Technology Stack
@@ -92,9 +92,9 @@ The Project Feasibility Document is Here ['SocilaConnect Feasibility Overview'](
 
  Here is the Actual Detail Engineering contracts for social Design and Architecture 
  
- The SocailConnect System Desing Document is Here ['SocilaConnect Project Overview'](docs/architecture/Architecture.md)
- The SocailConnect System  Detial Desing Document is Here ['SocilaConnect Project Overview'](docs/architecture/Detailed-Design.md)
- The SocailConnect Domain Model Architecture Document is Here ['SocilaConnect Project Overview'](docs/architecture/DomainModelsArch.md)
+ *The SocailConnect System Desing Document is Here ['SocilaConnect Project Overview'](docs/architecture/Architecture.md)
+ *The SocailConnect System  Detial Desing Document is Here ['SocilaConnect Project Overview'](docs/architecture/Detailed-Design.md)
+ *The SocailConnect Domain Model Architecture Document is Here ['SocilaConnect Project Overview'](docs/architecture/DomainModelsArch.md)
  
 * Layered modular monolith
 * DTO-based application boundaries
