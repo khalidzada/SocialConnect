@@ -52,6 +52,7 @@ The project emphasizes:
 * Traceable architectural decisions
 * Long-term extensibility
 
+The Official Project Review Document is Here ['SocilaConnect Project Overview'](docs/requirements/Project-Overview.md) 
 ---
 
 # 🏗️ Technology Stack
